@@ -11,8 +11,7 @@
         --bg: #f5f7fa; --panel: #ffffff; --panel-2: #f0f2f5; --border: #e1e4e8;
         --ink: #1a1a1a; --ink-dim: #6b7280; --ink-faint: #9ca3af;
         --success: #16a34a; --error: #dc2626; --warn: #ea580c; --info: #2563eb;
-        --value: #8b5cf6;
-        --radius: 12px;
+        --value: #8b5cf6; --radius: 10px;
     }
     body.dark {
         --bg: #0f1419; --panel: #1a2028; --panel-2: #232b36; --border: #2d3744;
@@ -21,473 +20,366 @@
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         background: var(--bg); color: var(--ink); min-height: 100vh;
-        padding: 1rem 0.7rem 6rem; font-size: 14px; line-height: 1.5;
-        max-width: 900px; margin: 0 auto;
+        padding: 0.7rem; font-size: 15px; line-height: 1.5;
+        max-width: 100%; margin: 0 auto;
     }
-    header { margin-bottom: 1rem; text-align: center; position: relative; }
-    h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.2rem; }
-    .subtitle { font-size: 0.75rem; color: var(--ink-dim); }
+
+    /* HEADER */
+    header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.7rem 0.9rem; background: var(--panel);
+        border-radius: var(--radius); margin-bottom: 0.7rem;
+        border: 1px solid var(--border);
+    }
+    .header-left { display: flex; align-items: center; gap: 0.6rem; }
+    .menu-btn {
+        background: var(--panel-2); border: 1px solid var(--border);
+        width: 38px; height: 38px; border-radius: 8px;
+        cursor: pointer; font-size: 1.2rem;
+        display: flex; align-items: center; justify-content: center;
+    }
+    h1 { font-size: 1rem; font-weight: 700; }
+    .subtitle { font-size: 0.68rem; color: var(--ink-dim); }
     .theme-toggle {
-        position: absolute; top: 0; right: 0;
-        background: var(--panel); border: 1px solid var(--border);
-        width: 36px; height: 36px; border-radius: 50%;
+        background: var(--panel-2); border: 1px solid var(--border);
+        width: 38px; height: 38px; border-radius: 8px;
         cursor: pointer; font-size: 1rem;
         display: flex; align-items: center; justify-content: center;
     }
+
+    /* STATUS */
     .conn-status {
-        display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-        font-size: 0.72rem; margin-top: 0.4rem; color: var(--ink-dim);
+        display: flex; align-items: center; gap: 0.4rem;
+        font-size: 0.72rem; padding: 0.5rem 0.8rem;
+        background: var(--panel); border-radius: var(--radius);
+        margin-bottom: 0.7rem; border: 1px solid var(--border);
     }
     .conn-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-faint); }
-    .conn-status.connected .dot { background: var(--success); animation: pulse-dot 2s infinite; }
+    .conn-status.connected .dot { background: var(--success); animation: pulse 2s infinite; }
     .conn-status.error .dot { background: var(--error); }
-    @keyframes pulse-dot { 50% { opacity: 0.4; } }
+    @keyframes pulse { 50% { opacity: 0.4; } }
 
+    /* MENU */
+    .menu-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.6); z-index: 1000;
+        display: none; align-items: flex-start; justify-content: flex-start;
+    }
+    .menu-overlay.visible { display: flex; }
+    .menu-panel {
+        background: var(--panel); width: 75%; max-width: 320px;
+        height: 100%; padding: 1rem; overflow-y: auto;
+        border-right: 1px solid var(--border);
+    }
+    .menu-title {
+        font-size: 0.7rem; text-transform: uppercase; color: var(--ink-dim);
+        font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.6rem;
+        padding: 0.5rem 0;
+    }
+    .menu-item {
+        padding: 0.8rem 0.9rem; border-radius: 8px;
+        font-size: 0.9rem; font-weight: 600; cursor: pointer;
+        display: flex; align-items: center; gap: 0.6rem;
+        margin-bottom: 0.3rem;
+    }
+    .menu-item:hover, .menu-item.active { background: var(--ink); color: var(--bg); }
+
+    /* PANELS */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* SECTION */
+    .section {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: var(--radius); margin-bottom: 0.7rem; overflow: hidden;
+    }
+    .section-header {
+        padding: 0.8rem 0.9rem; cursor: pointer; user-select: none;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-title {
+        font-size: 0.72rem; text-transform: uppercase;
+        color: var(--ink-dim); font-weight: 700; letter-spacing: 0.05em;
+    }
+    .chevron { font-size: 0.7rem; color: var(--ink-faint); transition: transform 0.2s; }
+    .section.open .chevron { transform: rotate(180deg); }
+    .section-body { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+    .section.open .section-body { max-height: 3000px; }
+    .section-content { padding: 0 0.9rem 0.9rem; }
+
+    /* FORMULAIRES */
+    label {
+        display: block; font-size: 0.72rem; color: var(--ink-dim);
+        margin-bottom: 0.3rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    input, select {
+        width: 100%; padding: 0.75rem; border-radius: 8px;
+        border: 1px solid var(--border); background: var(--panel-2);
+        color: var(--ink); font-family: inherit; font-size: 0.9rem;
+        -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--ink); }
+    .field { margin-bottom: 0.7rem; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+    /* BOUTONS */
+    .btn {
+        width: 100%; padding: 0.85rem; border-radius: 8px;
+        border: none; background: var(--ink); color: var(--bg);
+        font-size: 0.9rem; font-weight: 700; font-family: inherit;
+        cursor: pointer; margin-bottom: 0.5rem;
+    }
+    .btn-secondary {
+        background: var(--panel); color: var(--ink);
+        border: 1px solid var(--border);
+    }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--error); color: #fff; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* MATCH CARD */
+    .match-card {
+        background: var(--panel); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    .match-header {
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.7rem; color: var(--ink-dim); margin-bottom: 0.4rem;
+    }
+    .match-teams {
+        font-size: 0.95rem; font-weight: 700; text-align: center;
+        margin-bottom: 0.6rem; line-height: 1.4;
+    }
+    .match-teams .vs { color: var(--ink-faint); font-weight: 500; margin: 0 0.4rem; }
+    .proba-grid {
+        display: grid; grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.3rem; margin-bottom: 0.6rem;
+    }
+    .proba-cell {
+        padding: 0.5rem; border-radius: 6px; text-align: center;
+        background: var(--panel-2); border: 1px solid var(--border);
+    }
+    .proba-cell .lbl { font-size: 0.6rem; color: var(--ink-dim); font-weight: 700; }
+    .proba-cell .val { font-size: 0.95rem; font-weight: 700; font-family: ui-monospace, monospace; }
+    .proba-cell.fav { background: #dcfce7; border-color: var(--success); }
+    .proba-cell.fav .val { color: var(--success); }
+    body.dark .proba-cell.fav { background: #052e1666; }
+    .bet-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.5rem; background: var(--panel-2); border-radius: 6px;
+        margin-bottom: 0.3rem; font-size: 0.8rem;
+    }
+    .bet-row .bet-name { flex: 1; }
+    .bet-row .bet-proba { font-weight: 700; font-family: ui-monospace, monospace; margin-right: 0.4rem; }
+    .bet-row input { width: 70px; padding: 0.35rem 0.5rem; font-size: 0.75rem; text-align: right; }
+    .bet-row .val { font-size: 0.72rem; font-weight: 700; margin-left: 0.3rem; min-width: 55px; text-align: right; }
+    .bet-row .val.positive { color: var(--success); }
+    .bet-row .val.negative { color: var(--ink-dim); }
+
+    /* EMPTY */
+    .empty {
+        text-align: center; padding: 2rem 1rem;
+        color: var(--ink-faint); font-size: 0.85rem;
+    }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .stat {
+        padding: 0.6rem; border-radius: 8px; text-align: center;
+        background: var(--panel-2); border: 1px solid var(--border);
+    }
+    .stat .lbl { font-size: 0.6rem; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; }
+    .stat .val { font-size: 1rem; font-weight: 700; font-family: ui-monospace, monospace; }
+    .stat .val.win { color: var(--success); }
+    .stat .val.loss { color: var(--error); }
+
+    /* TRADES */
+    .trade {
+        padding: 0.8rem; border-radius: 8px; margin-bottom: 0.4rem;
+        background: var(--panel-2); border: 1px solid var(--border);
+        border-left: 4px solid var(--info);
+    }
+    .trade.win { border-left-color: var(--success); }
+    .trade.loss { border-left-color: var(--error); }
+    .trade.void { border-left-color: var(--ink-faint); }
+    .trade-header { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
+    .trade-match { font-weight: 700; font-size: 0.85rem; }
+    .trade-bet { font-size: 0.75rem; color: var(--ink-dim); margin-bottom: 0.3rem; }
+    .trade-info { display: flex; gap: 0.6rem; font-size: 0.72rem; flex-wrap: wrap; }
+    .trade-actions { display: flex; gap: 0.3rem; margin-top: 0.4rem; flex-wrap: wrap; }
+    .trade-actions button { padding: 0.3rem 0.6rem; font-size: 0.7rem; width: auto; margin: 0; }
+
+    /* TOAST */
     .toast {
-        position: fixed; top: 1rem; left: 50%;
-        transform: translateX(-50%) translateY(-100px);
-        background: var(--ink); color: var(--bg);
-        padding: 0.7rem 1.1rem; border-radius: 10px;
-        font-size: 0.8rem; font-weight: 500;
-        z-index: 1000; opacity: 0;
-        transition: transform 0.35s, opacity 0.35s;
-        max-width: 90vw; text-align: center;
+        position: fixed; top: 1rem; left: 50%; transform: translateX(-50%) translateY(-100px);
+        background: var(--ink); color: var(--bg); padding: 0.7rem 1rem;
+        border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+        z-index: 2000; opacity: 0; transition: all 0.3s;
     }
     .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { background: var(--success); color: #fff; }
     .toast.error { background: var(--error); color: #fff; }
     .toast.warn { background: var(--warn); color: #fff; }
 
-    .tabs {
-        display: flex; gap: 0.2rem; margin-bottom: 1rem;
-        background: var(--panel); border-radius: 10px; padding: 0.25rem;
-        border: 1px solid var(--border); overflow-x: auto;
-    }
-    .tab {
-        padding: 0.5rem 0.7rem; border-radius: 7px;
-        font-size: 0.72rem; font-weight: 600; cursor: pointer;
-        white-space: nowrap; color: var(--ink-dim);
-    }
-    .tab.active { background: var(--ink); color: var(--bg); }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .section {
-        background: var(--panel); border: 1px solid var(--border);
-        border-radius: var(--radius); margin-bottom: 0.7rem;
-        overflow: hidden;
-    }
-    .section-header {
-        padding: 0.75rem 0.9rem; cursor: pointer; user-select: none;
-        display: flex; justify-content: space-between; align-items: center;
-    }
-    .section-title {
-        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
-        color: var(--ink-dim); font-weight: 700;
-    }
-    .chevron { font-size: 0.65rem; color: var(--ink-faint); transition: transform 0.2s; }
-    .section.open .chevron { transform: rotate(180deg); }
-    .section-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-    .section.open .section-body { max-height: 5000px; }
-    .section-content { padding: 0 0.9rem 0.9rem; }
-
-    label.control-label {
-        display: block; font-size: 0.68rem; color: var(--ink-dim);
-        margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em;
-        font-weight: 700;
-    }
-    select, input[type="text"], input[type="password"], input[type="number"] {
-        width: 100%; padding: 0.65rem 0.8rem; border-radius: 8px;
-        border: 1px solid var(--border); background: var(--panel-2);
-        color: var(--ink); font-family: inherit; font-size: 0.85rem;
-        -webkit-appearance: none; appearance: none;
-    }
-    select:focus, input:focus { outline: none; border-color: var(--ink); }
-    .control-row { margin-bottom: 0.7rem; }
-    .control-row:last-child { margin-bottom: 0; }
-    .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-    .control-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
-
-    .btn-primary {
-        width: 100%; padding: 0.95rem; border-radius: var(--radius);
-        border: none; background: var(--ink); color: var(--bg);
-        font-size: 0.92rem; font-weight: 700; font-family: inherit;
-        cursor: pointer; margin-bottom: 0.8rem;
-    }
-    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-    .btn-secondary {
-        padding: 0.5rem 0.8rem; border-radius: 8px;
-        border: 1px solid var(--border); background: var(--panel-2);
-        color: var(--ink); font-size: 0.76rem; font-weight: 600;
-        font-family: inherit; cursor: pointer;
-    }
-    .btn-danger { background: var(--error); color: #fff; border-color: var(--error); }
-    .btn-success { background: var(--success); color: #fff; border-color: var(--success); }
-    .btn-value { background: var(--value); color: #fff; border-color: var(--value); }
-
-    /* MATCH CARDS */
-    .match-card {
-        padding: 0.85rem; border-radius: 10px;
-        border: 1px solid var(--border); margin-bottom: 0.7rem;
-        background: var(--panel); position: relative;
-    }
-    .match-card.has-value { border-left: 4px solid var(--value); }
-    .match-card.no-value { border-left: 4px solid var(--ink-faint); opacity: 0.85; }
-    .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
-    .match-league {
-        font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-        padding: 0.15rem 0.5rem; border-radius: 4px;
-        background: var(--panel-2); color: var(--ink-dim);
-    }
-    .match-time { font-size: 0.72rem; font-weight: 700; color: var(--info); }
-    .match-teams {
-        font-size: 0.95rem; font-weight: 700; text-align: center;
-        margin-bottom: 0.5rem; line-height: 1.3;
-    }
-    .match-teams .team-home { color: var(--ink); }
-    .match-teams .team-vs { color: var(--ink-faint); font-weight: 500; margin: 0 0.4rem; }
-    .match-teams .team-away { color: var(--ink); }
-
-    .proba-grid {
-        display: grid; grid-template-columns: repeat(3, 1fr);
-        gap: 0.4rem; margin-bottom: 0.5rem;
-    }
-    .proba-cell {
-        padding: 0.5rem 0.3rem; border-radius: 6px;
-        background: var(--panel-2); text-align: center;
-    }
-    .proba-cell .p-label { font-size: 0.6rem; color: var(--ink-dim); text-transform: uppercase; font-weight: 700; }
-    .proba-cell .p-value { font-size: 0.95rem; font-weight: 700; font-family: ui-monospace, monospace; }
-    .proba-cell.favorite { background: #dcfce7; }
-    .proba-cell.favorite .p-value { color: var(--success); }
-    body.dark .proba-cell.favorite { background: #052e1666; }
-
-    .bet-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 0.4rem 0.5rem; border-radius: 6px;
-        background: var(--panel-2); margin-bottom: 0.3rem;
-        font-size: 0.78rem;
-    }
-    .bet-row .bet-name { flex: 1; }
-    .bet-row .bet-proba { font-weight: 700; font-family: ui-monospace, monospace; margin-right: 0.5rem; }
-    .bet-row .bet-input {
-        width: 70px; padding: 0.3rem 0.5rem; font-size: 0.75rem;
-        font-family: ui-monospace, monospace; text-align: right;
-    }
-    .bet-row .bet-value {
-        font-size: 0.72rem; font-weight: 700; margin-left: 0.4rem;
-        min-width: 55px; text-align: right;
-    }
-    .bet-row .bet-value.positive { color: var(--success); }
-    .bet-row .bet-value.negative { color: var(--ink-dim); }
-    .bet-row .bet-value.high { color: var(--value); font-weight: 800; }
-
-    .match-footer {
-        display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.68rem; color: var(--ink-faint);
-        margin-top: 0.4rem; padding-top: 0.4rem;
-        border-top: 1px solid var(--border);
-    }
-    .match-footer .confidence-badge {
-        padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;
-    }
-    .confidence-badge.stars-5 { background: #dcfce7; color: var(--success); }
-    .confidence-badge.stars-4 { background: #dbeafe; color: var(--info); }
-    .confidence-badge.stars-3 { background: #fef3c7; color: var(--warn); }
-    .confidence-badge.stars-2 { background: #fee2e2; color: var(--error); }
-
-    /* BILLETS */
-    .billet-card {
-        padding: 0.85rem; border-radius: 10px;
-        border: 1px solid var(--border); margin-bottom: 0.7rem;
-        background: var(--panel); position: relative;
-    }
-    .billet-card.safe { border-left: 4px solid var(--success); }
-    .billet-card.value { border-left: 4px solid var(--info); }
-    .billet-card.risky { border-left: 4px solid var(--warn); }
-    .billet-card.simple { border-left: 4px solid var(--value); }
-    .billet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .billet-type {
-        font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
-        padding: 0.2rem 0.6rem; border-radius: 4px;
-    }
-    .billet-type.safe { background: var(--success); color: #fff; }
-    .billet-type.value { background: var(--info); color: #fff; }
-    .billet-type.risky { background: var(--warn); color: #fff; }
-    .billet-type.simple { background: var(--value); color: #fff; }
-    .billet-cote {
-        font-size: 1rem; font-weight: 800; color: var(--ink);
-        font-family: ui-monospace, monospace;
-    }
-    .billet-selections { margin-bottom: 0.5rem; }
-    .billet-selection {
-        padding: 0.4rem 0.6rem; background: var(--panel-2);
-        border-radius: 6px; margin-bottom: 0.3rem;
-        font-size: 0.78rem; display: flex; justify-content: space-between;
-    }
-    .billet-footer {
-        display: flex; justify-content: space-between; align-items: center;
-        font-size: 0.72rem; color: var(--ink-dim);
-        padding-top: 0.4rem; border-top: 1px solid var(--border);
-    }
-
-    /* JOURNAL */
-    .trade-item {
-        padding: 0.75rem; border-radius: 8px;
-        border: 1px solid var(--border); margin-bottom: 0.5rem;
-        background: var(--panel-2); position: relative;
-    }
-    .trade-item.open { border-left: 4px solid var(--info); }
-    .trade-item.win { border-left: 4px solid var(--success); background: #f0fdf4; }
-    .trade-item.loss { border-left: 4px solid var(--error); background: #fef2f2; }
-    .trade-item.void { border-left: 4px solid var(--ink-faint); background: #f9fafb; }
-    body.dark .trade-item.win { background: #052e1644; }
-    body.dark .trade-item.loss { background: #450a0a44; }
-    body.dark .trade-item.void { background: #1f293744; }
-    .trade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
-    .trade-match { font-weight: 700; font-size: 0.85rem; }
-    .trade-bet { font-size: 0.72rem; color: var(--ink-dim); margin-bottom: 0.3rem; }
-    .trade-info {
-        display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.3rem;
-        font-size: 0.72rem; margin-bottom: 0.4rem;
-    }
-    .trade-info .ti-item .ti-label { font-size: 0.58rem; color: var(--ink-dim); text-transform: uppercase; font-weight: 700; }
-    .trade-info .ti-item .ti-value { font-weight: 700; font-family: ui-monospace, monospace; }
-    .trade-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--ink-faint); }
-    .trade-actions { display: flex; gap: 0.3rem; margin-top: 0.4rem; flex-wrap: wrap; }
-    .trade-actions button { padding: 0.3rem 0.6rem; font-size: 0.7rem; }
-    .trade-result-badge {
-        font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px;
-        font-weight: 700;
-    }
-    .trade-result-badge.win { background: var(--success); color: #fff; }
-    .trade-result-badge.loss { background: var(--error); color: #fff; }
-    .trade-result-badge.void { background: var(--ink-faint); color: #fff; }
-    .trade-result-badge.pending { background: var(--info); color: #fff; }
-
-    /* STATS */
-    .stats-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 0.4rem; margin-bottom: 0.8rem;
-    }
-    .stat-card {
-        padding: 0.6rem 0.5rem; border-radius: 8px;
-        background: var(--panel-2); border: 1px solid var(--border);
-        text-align: center;
-    }
-    .stat-card .st-label {
-        font-size: 0.6rem; text-transform: uppercase;
-        color: var(--ink-dim); font-weight: 700; margin-bottom: 0.2rem;
-    }
-    .stat-card .st-value {
-        font-size: 1rem; font-weight: 700; font-family: ui-monospace, monospace;
-    }
-    .stat-card .st-value.win { color: var(--success); }
-    .stat-card .st-value.loss { color: var(--error); }
-    .stat-card .st-value.neutral { color: var(--ink); }
-
-    /* RAPPORT */
-    .report-container {
-        background: var(--panel-2); padding: 1rem; border-radius: 8px;
-        font-size: 0.82rem; line-height: 1.6; margin-bottom: 0.8rem;
-    }
-    .report-container h3 {
-        font-size: 0.85rem; margin: 0.8rem 0 0.4rem;
-        color: var(--ink); border-bottom: 1px solid var(--border);
-        padding-bottom: 0.3rem;
-    }
-    .report-container h3:first-child { margin-top: 0; }
-    .report-container ul { padding-left: 1.2rem; margin-bottom: 0.4rem; }
-    .report-container li { margin-bottom: 0.2rem; }
-
-    .empty-state {
-        text-align: center; padding: 1.8rem 1rem;
-        color: var(--ink-faint); font-size: 0.8rem;
-    }
-    .action-row { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
-
-    .status-bar {
-        position: fixed; bottom: 0; left: 0; right: 0;
-        background: var(--ink); color: var(--bg); padding: 0.6rem 1rem;
-        font-size: 0.76rem; display: flex; align-items: center; gap: 0.5rem;
-        transform: translateY(100%); transition: transform 0.3s; z-index: 100;
-    }
-    .status-bar.visible { transform: translateY(0); }
+    /* SPINNER */
     .spinner {
-        width: 12px; height: 12px; border: 2px solid rgba(128,128,128,0.3);
+        width: 14px; height: 14px; border: 2px solid rgba(128,128,128,0.3);
         border-top-color: currentColor; border-radius: 50%;
-        animation: spin 0.8s linear infinite; flex-shrink: 0;
+        animation: spin 0.8s linear infinite; display: inline-block;
+        vertical-align: middle; margin-right: 0.4rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .loading-box {
-        text-align: center; padding: 2rem 1rem;
-        color: var(--ink-dim); font-size: 0.85rem;
+    /* INFO */
+    .info-box {
+        padding: 0.7rem; border-radius: 8px; font-size: 0.75rem;
+        background: #eff6ff; border-left: 3px solid var(--info);
+        color: #1e3a8a; margin-bottom: 0.7rem; line-height: 1.5;
     }
-    .loading-box .spinner {
-        width: 20px; height: 20px; border-width: 3px;
-        margin: 0 auto 0.6rem; color: var(--ink);
-    }
-
-    .league-filter {
-        display: flex; gap: 0.3rem; overflow-x: auto;
-        padding-bottom: 0.5rem; margin-bottom: 0.5rem;
-    }
-    .league-chip {
-        padding: 0.35rem 0.7rem; border-radius: 16px;
-        border: 1px solid var(--border); background: var(--panel-2);
-        font-size: 0.7rem; font-weight: 600; cursor: pointer;
-        white-space: nowrap;
-    }
-    .league-chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-
-    .disclaimer {
-        font-size: 0.68rem; color: var(--ink-dim);
-        text-align: center; padding: 0.7rem;
-        border-top: 1px solid var(--border); margin-top: 0.8rem;
-    }
-
-    .value-badge {
-        position: absolute; top: 0.5rem; right: 0.5rem;
-        background: var(--value); color: #fff;
-        padding: 0.15rem 0.5rem; border-radius: 4px;
-        font-size: 0.62rem; font-weight: 700;
-    }
+    body.dark .info-box { background: #1e3a5f; color: #bfdbfe; }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-    <button class="theme-toggle" id="theme-toggle">🌙</button>
-    <h1>⚽ Foot Value Pro</h1>
-    <p class="subtitle">Value betting · 10 championnats · Modèle Poisson</p>
-    <div class="conn-status" id="conn-status">
-        <span class="dot"></span>
-        <span id="conn-text">Prêt</span>
+    <div class="header-left">
+        <button class="menu-btn" id="menu-btn">☰</button>
+        <div>
+            <h1>⚽ Foot Value</h1>
+            <div class="subtitle" id="current-view">Matchs</div>
+        </div>
     </div>
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
 </header>
 
-<div class="tabs">
-    <div class="tab active" data-tab="matches">⚽ Matchs</div>
-    <div class="tab" data-tab="billets">🎫 Billets</div>
-    <div class="tab" data-tab="journal">📓 Journal</div>
-    <div class="tab" data-tab="stats">📊 Stats</div>
-    <div class="tab" data-tab="report">📄 Rapport</div>
-    <div class="tab" data-tab="settings">⚙️ Réglages</div>
+<!-- MENU -->
+<div class="menu-overlay" id="menu-overlay">
+    <div class="menu-panel" id="menu-panel">
+        <div class="menu-title">Navigation</div>
+        <div class="menu-item active" data-view="matches">⚽ Matchs</div>
+        <div class="menu-item" data-view="billets">🎫 Billets</div>
+        <div class="menu-item" data-view="journal">📓 Journal</div>
+        <div class="menu-item" data-view="stats">📊 Stats</div>
+        <div class="menu-item" data-view="report">📄 Rapport</div>
+        <div class="menu-title">Configuration</div>
+        <div class="menu-item" data-view="settings">⚙️ Réglages</div>
+    </div>
 </div>
 
-<!-- ONGLET MATCHS -->
-<div class="tab-panel active" id="panel-matches">
-    <div class="action-row">
-        <button class="btn-secondary" id="load-matches-btn">🔄 Charger les matchs du jour</button>
-        <button class="btn-secondary" id="clear-cache-btn">🗑️ Vider le cache</button>
-    </div>
+<!-- STATUS -->
+<div class="conn-status" id="conn-status">
+    <span class="dot"></span>
+    <span id="conn-text">Prêt</span>
+</div>
 
-    <div class="league-filter" id="league-filter"></div>
+<!-- INFO -->
+<div class="info-box" id="info-box">
+    💡 Configure ton <strong>API Token</strong> dans ⚙️ Réglages pour commencer.
+</div>
 
+<!-- VUE MATCHS -->
+<div class="panel active" id="view-matches">
+    <button class="btn" id="load-matches-btn">🔄 Charger les matchs du jour</button>
+    <button class="btn btn-secondary" id="clear-cache-btn">🗑️ Vider le cache</button>
     <div id="matches-container">
-        <div class="empty-state">Clique sur "Charger les matchs du jour"</div>
+        <div class="empty">Clique sur "Charger les matchs du jour"</div>
     </div>
 </div>
 
-<!-- ONGLET BILLETS -->
-<div class="tab-panel" id="panel-billets">
-    <div class="action-row">
-        <button class="btn-secondary" id="generate-billets-btn">🎫 Générer les billets</button>
-    </div>
-
+<!-- VUE BILLETS -->
+<div class="panel" id="view-billets">
+    <button class="btn" id="generate-billets-btn">🎫 Générer les billets</button>
     <div id="billets-container">
-        <div class="empty-state">Clique sur "Générer les billets" pour voir les combinaisons optimales</div>
+        <div class="empty">Génère d'abord les matchs, puis clique sur "Générer les billets"</div>
     </div>
 </div>
 
-<!-- ONGLET JOURNAL -->
-<div class="tab-panel" id="panel-journal">
-    <div class="action-row">
-        <button class="btn-secondary" id="add-trade-btn">➕ Ajouter un pari</button>
-    </div>
+<!-- VUE JOURNAL -->
+<div class="panel" id="view-journal">
+    <button class="btn" id="add-trade-btn">➕ Ajouter un pari</button>
 
-    <div class="section" id="add-trade-section" style="display:none;">
-        <div class="section-header" data-toggle="section-add-trade">
+    <div class="section" id="add-trade-form" style="display:none;">
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
             <span class="section-title">📝 Nouveau pari</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-add-trade">
+        <div class="section-body">
             <div class="section-content">
-                <div class="control-row">
-                    <label class="control-label">Match</label>
-                    <input type="text" id="trade-match" placeholder="PSG vs Lyon">
+                <div class="field">
+                    <label>Match</label>
+                    <input type="text" id="t-match" placeholder="PSG vs Lyon">
                 </div>
-                <div class="control-grid">
-                    <div class="control-row">
-                        <label class="control-label">Pari</label>
-                        <input type="text" id="trade-bet" placeholder="PSG gagne">
+                <div class="field">
+                    <label>Pari</label>
+                    <input type="text" id="t-bet" placeholder="PSG gagne">
+                </div>
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Cote</label>
+                        <input type="number" id="t-cote" step="0.01" placeholder="1.50">
                     </div>
-                    <div class="control-row">
-                        <label class="control-label">Cote</label>
-                        <input type="number" id="trade-cote" step="0.01" placeholder="1.50">
+                    <div class="field">
+                        <label>Mise (€)</label>
+                        <input type="number" id="t-mise" step="0.5" placeholder="2">
                     </div>
                 </div>
-                <div class="control-grid">
-                    <div class="control-row">
-                        <label class="control-label">Mise (€)</label>
-                        <input type="number" id="trade-mise" step="0.5" placeholder="2">
-                    </div>
-                    <div class="control-row">
-                        <label class="control-label">Type</label>
-                        <select id="trade-type">
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Type</label>
+                        <select id="t-type">
                             <option value="simple">Simple</option>
-                            <option value="safe">Billet Safe</option>
-                            <option value="value">Billet Value</option>
-                            <option value="risky">Billet Risqué</option>
+                            <option value="safe">Safe</option>
+                            <option value="value">Value</option>
+                            <option value="risky">Risqué</option>
                         </select>
                     </div>
+                    <div class="field">
+                        <label>Ligue</label>
+                        <input type="text" id="t-league" placeholder="Ligue 1">
+                    </div>
                 </div>
-                <div class="control-row">
-                    <label class="control-label">Championnat</label>
-                    <input type="text" id="trade-league" placeholder="Ligue 1">
-                </div>
-                <div class="action-row">
-                    <button class="btn-secondary btn-success" id="save-trade-btn">💾 Enregistrer</button>
-                    <button class="btn-secondary" id="cancel-trade-btn">Annuler</button>
-                </div>
+                <button class="btn btn-success" id="save-trade">💾 Enregistrer</button>
+                <button class="btn btn-secondary" id="cancel-trade">Annuler</button>
             </div>
         </div>
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-open">
-            <span class="section-title">📈 Paris en cours <span id="open-count"></span></span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">📈 Paris en cours</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-open">
+        <div class="section-body">
             <div class="section-content">
-                <div id="open-trades-list"></div>
+                <div id="open-trades"></div>
             </div>
         </div>
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-closed">
-            <span class="section-title">📉 Paris terminés <span id="closed-count"></span></span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">📉 Paris terminés</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-closed">
+        <div class="section-body">
             <div class="section-content">
-                <div id="closed-trades-list"></div>
+                <div id="closed-trades"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ONGLET STATS -->
-<div class="tab-panel" id="panel-stats">
+<!-- VUE STATS -->
+<div class="panel" id="view-stats">
     <div class="section open">
-        <div class="section-header" data-toggle="section-stats-all">
-            <span class="section-title">📊 Statistiques globales</span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">📊 Global</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-stats-all">
+        <div class="section-body">
             <div class="section-content">
                 <div class="stats-grid" id="stats-global"></div>
             </div>
@@ -495,11 +387,11 @@
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-stats-week">
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
             <span class="section-title">📅 Cette semaine</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-stats-week">
+        <div class="section-body">
             <div class="section-content">
                 <div class="stats-grid" id="stats-week"></div>
             </div>
@@ -507,202 +399,133 @@
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-patterns">
-            <span class="section-title">🔍 Schémas détectés</span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">🔍 Schémas</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-patterns">
+        <div class="section-body">
             <div class="section-content">
-                <div id="patterns-analysis"></div>
+                <div id="patterns"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ONGLET RAPPORT -->
-<div class="tab-panel" id="panel-report">
-    <div class="action-row">
-        <button class="btn-secondary" id="generate-report-btn">📄 Générer le rapport PDF</button>
-    </div>
-    <div class="report-container" id="report-preview">
-        <div class="empty-state">Clique sur "Générer le rapport PDF"</div>
-    </div>
+<!-- VUE RAPPORT -->
+<div class="panel" id="view-report">
+    <button class="btn" id="gen-pdf-btn">📄 Générer le rapport PDF</button>
+    <div id="report-preview" style="padding:1rem;background:var(--panel);border-radius:10px;font-size:0.85rem;line-height:1.6;"></div>
 </div>
 
-<!-- ONGLET RÉGLAGES -->
-<div class="tab-panel" id="panel-settings">
+<!-- VUE RÉGLAGES -->
+<div class="panel" id="view-settings">
     <div class="section open">
-        <div class="section-header" data-toggle="section-api">
-            <span class="section-title">🔑 API football-data.org</span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">🔑 API Token (obligatoire)</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-api">
+        <div class="section-body">
             <div class="section-content">
-                <div class="control-row">
-                    <label class="control-label">API Token</label>
-                    <input type="password" id="api-token-input" placeholder="Colle ton token ici">
+                <div class="field">
+                    <label>football-data.org Token</label>
+                    <input type="text" id="api-token" placeholder="Colle ton token ici">
                 </div>
-                <button class="btn-secondary" id="save-api-token">Enregistrer</button>
-                <div style="font-size:0.7rem;color:var(--ink-dim);margin-top:0.5rem;line-height:1.4;">
-                    Token gratuit sur <strong>football-data.org</strong> → Settings
+                <button class="btn" id="save-api">Enregistrer</button>
+                <div style="font-size:0.7rem;color:var(--ink-dim);margin-top:0.5rem;">
+                    Gratuit sur <strong>football-data.org</strong> → Settings
                 </div>
             </div>
         </div>
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-bankroll">
-            <span class="section-title">💰 Bankroll & Mise</span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">💰 Bankroll</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-bankroll">
+        <div class="section-body">
             <div class="section-content">
-                <div class="control-grid">
-                    <div class="control-row">
-                        <label class="control-label">Bankroll (€)</label>
-                        <input type="number" id="bankroll-input" value="100" step="10">
+                <div class="field-grid">
+                    <div class="field">
+                        <label>Bankroll (€)</label>
+                        <input type="number" id="bankroll" value="100">
                     </div>
-                    <div class="control-row">
-                        <label class="control-label">Mise (% bankroll)</label>
-                        <input type="number" id="mise-pct-input" value="2" step="0.5">
+                    <div class="field">
+                        <label>Mise (%)</label>
+                        <input type="number" id="mise-pct" value="2" step="0.5">
                     </div>
                 </div>
-                <button class="btn-secondary" id="save-bankroll">Enregistrer</button>
+                <button class="btn" id="save-bankroll">Enregistrer</button>
             </div>
         </div>
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-filters">
-            <span class="section-title">🎯 Filtres de value betting</span>
-            <span class="chevron">▼</span>
-        </div>
-        <div class="section-body" id="section-filters">
-            <div class="section-content">
-                <div class="control-row">
-                    <label class="control-label">Value minimum (%)</label>
-                    <input type="number" id="min-value-input" value="5" step="1">
-                </div>
-                <div class="control-row">
-                    <label class="control-label">Confiance minimum (étoiles)</label>
-                    <select id="min-confidence-input">
-                        <option value="3">⭐⭐⭐ (60%+)</option>
-                        <option value="4">⭐⭐⭐⭐ (75%+)</option>
-                        <option value="5">⭐⭐⭐⭐⭐ (85%+)</option>
-                    </select>
-                </div>
-                <div class="control-grid">
-                    <div class="control-row">
-                        <label class="control-label">Cote minimum</label>
-                        <input type="number" id="min-cote-input" value="1.30" step="0.05">
-                    </div>
-                    <div class="control-row">
-                        <label class="control-label">Cote maximum</label>
-                        <input type="number" id="max-cote-input" value="5.00" step="0.5">
-                    </div>
-                </div>
-                <button class="btn-secondary" id="save-filters">Enregistrer</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="section open">
-        <div class="section-header" data-toggle="section-telegram">
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
             <span class="section-title">📤 Telegram</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-telegram">
+        <div class="section-body">
             <div class="section-content">
-                <div class="control-row">
-                    <label class="control-label">Bot Token</label>
-                    <input type="password" id="telegram-token" placeholder="123456:ABC-DEF...">
+                <div class="field">
+                    <label>Bot Token</label>
+                    <input type="text" id="tg-token" placeholder="123456:ABC...">
                 </div>
-                <div class="control-row">
-                    <label class="control-label">Chat ID</label>
-                    <input type="text" id="telegram-chatid" placeholder="123456789">
+                <div class="field">
+                    <label>Chat ID</label>
+                    <input type="text" id="tg-chat" placeholder="123456789">
                 </div>
-                <div class="action-row">
-                    <button class="btn-secondary" id="save-telegram">Enregistrer</button>
-                    <button class="btn-secondary" id="test-telegram">Tester</button>
-                </div>
+                <button class="btn" id="save-tg">Enregistrer</button>
+                <button class="btn btn-secondary" id="test-tg">Tester</button>
             </div>
         </div>
     </div>
 
     <div class="section open">
-        <div class="section-header" data-toggle="section-danger">
-            <span class="section-title">⚠️ Zone sensible</span>
+        <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+            <span class="section-title">⚠️ Danger</span>
             <span class="chevron">▼</span>
         </div>
-        <div class="section-body" id="section-danger">
+        <div class="section-body">
             <div class="section-content">
-                <button class="btn-secondary btn-danger" id="clear-all-btn" style="width:100%;margin-bottom:0.5rem;">🗑️ Effacer toutes les données</button>
-                <button class="btn-secondary" id="export-data-btn" style="width:100%;">📥 Exporter les données (JSON)</button>
+                <button class="btn btn-danger" id="clear-all">🗑️ Tout effacer</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="disclaimer">
-    ⚠️ Outil d'analyse éducatif. Les paris sportifs comportent des risques. Misez responsable.
-</div>
+<div class="toast" id="toast"><span id="toast-text"></span></div>
 
-<div class="status-bar" id="status-bar">
-    <div class="spinner"></div>
-    <span id="status-text">Préparation…</span>
-</div>
-
-<div class="toast" id="toast"><span id="toast-text">Message</span></div>
 <script>
 // ══════════════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════════════
 const FD_API = 'https://api.football-data.org/v4';
-const STORAGE = {
-    apiToken: 'fv_api_token',
-    bankroll: 'fv_bankroll',
-    misePct: 'fv_mise_pct',
-    filters: 'fv_filters',
-    telegram: 'fv_telegram',
-    trades: 'fv_trades',
-    matchesCache: 'fv_matches_cache',
-    dark: 'fv_dark'
+const S = {
+    api: 'fv_api', bankroll: 'fv_bank', misePct: 'fv_mise', tg: 'fv_tg',
+    trades: 'fv_trades', cache: 'fv_cache', dark: 'fv_dark'
 };
-
-// Top 10 championnats
 const LEAGUES = [
-    { code: 'PL', name: 'Premier League', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { code: 'PL', name: 'Premier League', emoji: '🏴' },
     { code: 'PD', name: 'La Liga', emoji: '🇪🇸' },
     { code: 'SA', name: 'Serie A', emoji: '🇮🇹' },
     { code: 'BL1', name: 'Bundesliga', emoji: '🇩🇪' },
     { code: 'FL1', name: 'Ligue 1', emoji: '🇫🇷' },
     { code: 'DED', name: 'Eredivisie', emoji: '🇳🇱' },
     { code: 'PPL', name: 'Primeira Liga', emoji: '🇵🇹' },
-    { code: 'ELC', name: 'Championship', emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { code: 'ELC', name: 'Championship', emoji: '🏴' },
     { code: 'CL', name: 'Champions League', emoji: '🏆' },
     { code: 'BSA', name: 'Brasileirão', emoji: '🇧🇷' }
 ];
 
-// ══════════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════════
-const state = {
-    matches: [],
-    currentLeagueFilter: 'all',
-    analyzedMatches: [],
-    lastLoadTime: 0
-};
+const state = { matches: [], analyzed: [], lastLoad: 0 };
 
 // ══════════════════════════════════════════════════════════════════
 // UTILITAIRES
 // ══════════════════════════════════════════════════════════════════
 function $(id) { return document.getElementById(id); }
-function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
-        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-    ));
-}
-function log(m) { console.log('[Foot]', m); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function log(m) { console.log('[FV]', m); }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 let toastTimer;
@@ -716,61 +539,39 @@ function toast(msg, type = 'success', dur = 2500) {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('visible'), dur);
 }
-function setStatus(text) {
-    const bar = $('status-bar'), txt = $('status-text');
-    if (text) { bar.classList.add('visible'); txt.textContent = text; }
-    else bar.classList.remove('visible');
+
+function formatTime(iso) {
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2, '0');
+    return pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
 function formatDate(ts) {
     const d = new Date(ts);
     const pad = n => String(n).padStart(2, '0');
     return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
-function formatDateLong(ts) {
-    const d = new Date(ts);
-    return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-}
-function formatTime(iso) {
-    const d = new Date(iso);
-    const pad = n => String(n).padStart(2, '0');
-    return pad(d.getHours()) + ':' + pad(d.getMinutes());
-}
 function todayStr() {
     const d = new Date();
     const pad = n => String(n).padStart(2, '0');
     return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 }
-
-// ══════════════════════════════════════════════════════════════════
-// RÉGLAGES
-// ══════════════════════════════════════════════════════════════════
-function getApiToken() {
-    try { return (localStorage.getItem(STORAGE.apiToken) || '').trim(); } catch (e) { return ''; }
-}
-function getBankroll() {
-    try { return parseFloat(localStorage.getItem(STORAGE.bankroll)) || 100; } catch (e) { return 100; }
-}
-function getMisePct() {
-    try { return parseFloat(localStorage.getItem(STORAGE.misePct)) || 2; } catch (e) { return 2; }
-}
-function getFilters() {
-    try {
-        const f = JSON.parse(localStorage.getItem(STORAGE.filters) || '{}');
-        return {
-            minValue: f.minValue || 5,
-            minConfidence: f.minConfidence || 3,
-            minCote: f.minCote || 1.30,
-            maxCote: f.maxCote || 5.00
-        };
-    } catch (e) {
-        return { minValue: 5, minConfidence: 3, minCote: 1.30, maxCote: 5.00 };
-    }
-}
-function getTelegramConfig() {
-    try { return JSON.parse(localStorage.getItem(STORAGE.telegram) || '{}'); } catch (e) { return {}; }
+function tomorrowStr() {
+    const d = new Date(Date.now() + 86400000);
+    const pad = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 }
 
-function updateConnStatus(status, text) {
+// ══════════════════════════════════════════════════════════════════
+// STOCKAGE
+// ══════════════════════════════════════════════════════════════════
+function getApi() { try { return (localStorage.getItem(S.api) || '').trim(); } catch (e) { return ''; } }
+function getBank() { try { return parseFloat(localStorage.getItem(S.bankroll)) || 100; } catch (e) { return 100; } }
+function getMisePct() { try { return parseFloat(localStorage.getItem(S.misePct)) || 2; } catch (e) { return 2; } }
+function getTg() { try { return JSON.parse(localStorage.getItem(S.tg) || '{}'); } catch (e) { return {}; } }
+function getTrades() { try { return JSON.parse(localStorage.getItem(S.trades) || '[]'); } catch (e) { return []; } }
+function saveTrades(t) { try { localStorage.setItem(S.trades, JSON.stringify(t)); } catch (e) {} }
+
+function updateStatus(status, text) {
     const el = $('conn-status');
     el.classList.remove('connected', 'connecting', 'error');
     if (status) el.classList.add(status);
@@ -778,1125 +579,620 @@ function updateConnStatus(status, text) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// API FOOTBALL-DATA
+// API
 // ══════════════════════════════════════════════════════════════════
-async function fetchFD(path) {
-    const token = getApiToken();
+async function callAPI(path) {
+    const token = getApi();
     if (!token) throw new Error('Token API manquant');
-    const res = await fetch(FD_API + path, {
-        headers: { 'X-Auth-Token': token }
-    });
+    const res = await fetch(FD_API + path, { headers: { 'X-Auth-Token': token } });
     if (res.status === 429) throw new Error('Limite API atteinte (attends 1 min)');
-    if (res.status === 403) throw new Error('Token invalide ou limite atteinte');
-    if (!res.ok) {
-        const err = await res.text();
-        throw new Error('HTTP ' + res.status + ' — ' + err.slice(0, 100));
-    }
+    if (res.status === 403) throw new Error('Token invalide');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     return await res.json();
 }
 
 async function testConnection() {
+    if (!getApi()) { updateStatus('', 'Configure ton token'); return false; }
+    updateStatus('connecting', 'Test…');
     try {
-        updateConnStatus('connecting', 'Test de connexion…');
-        const data = await fetchFD('/competitions');
-        if (data.competitions) {
-            updateConnStatus('connected', 'Connecté · ' + data.competitions.length + ' compétitions');
-            return true;
-        }
-        updateConnStatus('error', 'Réponse invalide');
-        return false;
+        const d = await callAPI('/competitions');
+        updateStatus('connected', 'Connecté ✓');
+        return true;
     } catch (e) {
-        updateConnStatus('error', e.message.slice(0, 40));
+        updateStatus('error', e.message.slice(0, 40));
         return false;
     }
 }
 
 // ══════════════════════════════════════════════════════════════════
-// CHARGEMENT DES MATCHS DU JOUR
+// CHARGEMENT DES MATCHS
 // ══════════════════════════════════════════════════════════════════
 async function loadMatches() {
-    const token = getApiToken();
-    if (!token) { toast('Configure ton API token dans Réglages', 'warn'); return; }
+    if (!getApi()) { toast('Configure ton token dans Réglages', 'warn'); return; }
+    const btn = $('load-matches-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Chargement des 10 championnats…';
 
-    setStatus('Chargement des matchs du jour…');
-    const allMatches = [];
-    let ok = 0, fail = 0;
+    const all = [];
+    const today = todayStr();
+    const tomorrow = tomorrowStr();
+    let ok = 0;
 
     for (const league of LEAGUES) {
         try {
-            const date = todayStr();
-            // On charge aussi les matchs de demain pour anticiper
-            const dateTomorrow = new Date(Date.now() + 24*60*60*1000);
-            const pad = n => String(n).padStart(2, '0');
-            const tomorrow = dateTomorrow.getFullYear() + '-' + pad(dateTomorrow.getMonth() + 1) + '-' + pad(dateTomorrow.getDate());
-
-            const data = await fetchFD('/competitions/' + league.code + '/matches?dateFrom=' + date + '&dateTo=' + tomorrow);
+            const data = await callAPI('/competitions/' + league.code + '/matches?dateFrom=' + today + '&dateTo=' + tomorrow);
             if (data.matches) {
                 for (const m of data.matches) {
                     if (m.status === 'SCHEDULED' || m.status === 'TIMED') {
-                        allMatches.push({
+                        all.push({
                             id: m.id,
                             league: league.name,
                             leagueCode: league.code,
                             leagueEmoji: league.emoji,
-                            homeTeam: m.homeTeam.name,
-                            awayTeam: m.awayTeam.name,
-                            homeTeamId: m.homeTeam.id,
-                            awayTeamId: m.awayTeam.id,
-                            kickoff: m.utcDate,
-                            status: m.status
+                            home: m.homeTeam.name,
+                            away: m.awayTeam.name,
+                            homeId: m.homeTeam.id,
+                            awayId: m.awayTeam.id,
+                            kickoff: m.utcDate
                         });
                     }
                 }
             }
             ok++;
-            await sleep(7000); // 10 req/min → 7s entre chaque
+            btn.innerHTML = '<span class="spinner"></span> ' + ok + '/' + LEAGUES.length + ' championnats…';
+            await sleep(7000); // 10 req/min
         } catch (e) {
-            fail++;
             log('Erreur ' + league.code + ' : ' + e.message);
         }
     }
 
-    if (!allMatches.length) {
-        toast('Aucun match trouvé (' + ok + ' ligues OK, ' + fail + ' échecs)', 'warn');
-        setStatus(null);
+    if (!all.length) {
+        toast('Aucun match trouvé (' + ok + ' ligues OK)', 'warn');
+        btn.disabled = false;
+        btn.textContent = '🔄 Charger les matchs du jour';
         return;
     }
 
-    // Analyse des matchs
-    setStatus('Analyse des matchs (' + allMatches.length + ')…');
-    state.matches = allMatches;
-    state.lastLoadTime = Date.now();
+    btn.innerHTML = '<span class="spinner"></span> Analyse de ' + all.length + ' matchs…';
+    state.matches = all;
+    state.lastLoad = Date.now();
 
-    // Cache
-    try { localStorage.setItem(STORAGE.matchesCache, JSON.stringify({ matches: allMatches, time: Date.now() })); } catch (e) {}
+    // Analyse
+    await analyzeAll();
 
-    // Analyse pour chaque match
-    await analyzeAllMatches();
+    try { localStorage.setItem(S.cache, JSON.stringify({ matches: all, analyzed: state.analyzed, time: Date.now() })); } catch (e) {}
 
-    setStatus(null);
+    btn.disabled = false;
+    btn.textContent = '🔄 Recharger les matchs';
     renderMatches();
-    renderLeagueFilter();
-    toast(allMatches.length + ' matchs chargés ✓', 'success');
+    toast(all.length + ' matchs chargés ✓', 'success');
 }
 
 // ══════════════════════════════════════════════════════════════════
 // MODÈLE POISSON
 // ══════════════════════════════════════════════════════════════════
-// Calcule P(X = k) avec une distribution de Poisson
-function poissonProb(lambda, k) {
-    return Math.exp(-lambda) * Math.pow(lambda, k) / factorial(k);
-}
-function factorial(n) {
-    if (n <= 1) return 1;
-    let r = 1;
-    for (let i = 2; i <= n; i++) r *= i;
-    return r;
-}
+function fact(n) { if (n <= 1) return 1; let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; }
+function poisson(l, k) { return Math.exp(-l) * Math.pow(l, k) / fact(k); }
 
-// Probabilité que l'équipe A marque exactement k buts contre B
-function computeScoreMatrix(lambdaA, lambdaB, maxGoals = 6) {
-    const matrix = [];
-    for (let a = 0; a <= maxGoals; a++) {
-        matrix[a] = [];
-        for (let b = 0; b <= maxGoals; b++) {
-            matrix[a][b] = poissonProb(lambdaA, a) * poissonProb(lambdaB, b);
-        }
-    }
-    return matrix;
-}
-
-// Extrait les probabilités 1X2, O/U, BTTS depuis la matrice
-function computeAllProbabilities(matrix) {
-    let homeWin = 0, draw = 0, awayWin = 0;
-    let over15 = 0, over25 = 0, over35 = 0;
-    let btts = 0;
-    let exactScores = [];
-
-    for (let a = 0; a < matrix.length; a++) {
-        for (let b = 0; b < matrix[a].length; b++) {
-            const p = matrix[a][b];
-            const total = a + b;
-
-            if (a > b) homeWin += p;
-            else if (a === b) draw += p;
-            else awayWin += p;
-
-            if (total >= 2) over15 += p;
-            if (total >= 3) over25 += p;
-            if (total >= 4) over35 += p;
-
+function calcProbas(lh, la) {
+    let hw = 0, d = 0, aw = 0, o15 = 0, o25 = 0, o35 = 0, btts = 0;
+    const max = 6;
+    for (let a = 0; a <= max; a++) {
+        for (let b = 0; b <= max; b++) {
+            const p = poisson(lh, a) * poisson(la, b);
+            const t = a + b;
+            if (a > b) hw += p; else if (a === b) d += p; else aw += p;
+            if (t >= 2) o15 += p;
+            if (t >= 3) o25 += p;
+            if (t >= 4) o35 += p;
             if (a >= 1 && b >= 1) btts += p;
-
-            exactScores.push({ score: a + '-' + b, proba: p });
         }
     }
-
-    exactScores.sort((x, y) => y.proba - x.proba);
-
     return {
-        homeWin: parseFloat((homeWin * 100).toFixed(1)),
-        draw: parseFloat((draw * 100).toFixed(1)),
-        awayWin: parseFloat((awayWin * 100).toFixed(1)),
-        over15: parseFloat((over15 * 100).toFixed(1)),
-        over25: parseFloat((over25 * 100).toFixed(1)),
-        over35: parseFloat((over35 * 100).toFixed(1)),
-        under15: parseFloat(((1 - over15) * 100).toFixed(1)),
-        under25: parseFloat(((1 - over25) * 100).toFixed(1)),
-        under35: parseFloat(((1 - over35) * 100).toFixed(1)),
-        btts: parseFloat((btts * 100).toFixed(1)),
-        noBtts: parseFloat(((1 - btts) * 100).toFixed(1)),
-        topScores: exactScores.slice(0, 5)
-    };
-}
-
-// Calcule les forces d'attaque/défense basées sur les stats équipes
-function computeTeamStrengths(homeStats, awayStats, leagueAvgGoals = 1.35) {
-    // Attaque = buts marqués / moyenne ligue
-    // Défense = buts encaissés / moyenne ligue
-    const homeAttack = homeStats.goalsFor / leagueAvgGoals;
-    const homeDefense = homeStats.goalsAgainst / leagueAvgGoals;
-    const awayAttack = awayStats.goalsFor / leagueAvgGoals;
-    const awayDefense = awayStats.goalsAgainst / leagueAvgGoals;
-
-    // Facteur domicile (avantage terrain)
-    const homeAdvantage = 1.15;
-
-    // Lambda (buts attendus)
-    const lambdaHome = homeAttack * awayDefense * leagueAvgGoals * homeAdvantage;
-    const lambdaAway = awayAttack * homeDefense * leagueAvgGoals;
-
-    return {
-        lambdaHome: Math.max(0.3, Math.min(4.5, lambdaHome)),
-        lambdaAway: Math.max(0.3, Math.min(4.5, lambdaAway))
+        hw: +(hw * 100).toFixed(1), d: +(d * 100).toFixed(1), aw: +(aw * 100).toFixed(1),
+        o15: +(o15 * 100).toFixed(1), o25: +(o25 * 100).toFixed(1), o35: +(o35 * 100).toFixed(1),
+        u25: +((1 - o25) * 100).toFixed(1),
+        btts: +(btts * 100).toFixed(1),
+        noBtts: +((1 - btts) * 100).toFixed(1)
     };
 }
 
 // ══════════════════════════════════════════════════════════════════
-// RÉCUPÉRATION DES STATS D'ÉQUIPE (avec cache)
+// ANALYSE
 // ══════════════════════════════════════════════════════════════════
-const teamStatsCache = {};
+const standingsCache = {};
 
-async function fetchTeamStats(teamId, leagueCode) {
-    const cacheKey = 'stats_' + teamId + '_' + leagueCode;
-    if (teamStatsCache[cacheKey]) return teamStatsCache[cacheKey];
+async function getStandings(code) {
+    if (standingsCache[code]) return standingsCache[code];
     try {
-        const data = await fetchFD('/competitions/' + leagueCode + '/teams/' + teamId);
-        const team = data;
-        // Estimation basique des stats depuis les matchs joués
-        const stats = {
-            goalsFor: 1.4,
-            goalsAgainst: 1.3,
-            form: 'N/A',
-            played: 0
-        };
-        // On essaie d'extraire des vraies stats si disponibles
-        if (team.runningCompetitions) {
-            // Fallback par défaut
-        }
-        teamStatsCache[cacheKey] = stats;
-        return stats;
-    } catch (e) {
-        return { goalsFor: 1.4, goalsAgainst: 1.3, form: 'N/A' };
-    }
-}
-
-// Fallback : stats par défaut basées sur le classement
-async function fetchStandingsStats(leagueCode) {
-    const cacheKey = 'standings_' + leagueCode;
-    if (teamStatsCache[cacheKey]) return teamStatsCache[cacheKey];
-    try {
-        const data = await fetchFD('/competitions/' + leagueCode + '/standings');
-        const standings = data.standings?.[0]?.table || [];
-        const statsMap = {};
-        for (const row of standings) {
-            statsMap[row.team.id] = {
-                position: row.position,
+        const d = await callAPI('/competitions/' + code + '/standings');
+        const table = d.standings?.[0]?.table || [];
+        const map = {};
+        for (const row of table) {
+            map[row.team.id] = {
+                pos: row.position,
                 played: row.playedGames,
-                won: row.won,
-                draw: row.draw,
-                lost: row.lost,
-                goalsFor: row.goalsFor / Math.max(1, row.playedGames),
-                goalsAgainst: row.goalsAgainst / Math.max(1, row.playedGames),
-                points: row.points,
-                form: row.form || ''
+                gf: row.goalsFor / Math.max(1, row.playedGames),
+                ga: row.goalsAgainst / Math.max(1, row.playedGames),
+                pts: row.points
             };
         }
-        teamStatsCache[cacheKey] = statsMap;
-        return statsMap;
+        standingsCache[code] = map;
+        return map;
     } catch (e) {
         return {};
     }
 }
 
-// ══════════════════════════════════════════════════════════════════
-// ANALYSE D'UN MATCH
-// ══════════════════════════════════════════════════════════════════
-async function analyzeMatch(match) {
-    try {
-        // Récupère le classement (une fois par ligue, mis en cache)
-        const standingsMap = await fetchStandingsStats(match.leagueCode);
-
-        const homeStats = standingsMap[match.homeTeamId] || { goalsFor: 1.4, goalsAgainst: 1.3, position: 10 };
-        const awayStats = standingsMap[match.awayTeamId] || { goalsFor: 1.2, goalsAgainst: 1.5, position: 12 };
-
-        // Ajuste en fonction du classement (équipe mieux classée = plus forte)
-        const positionDiff = (homeStats.position - awayStats.position) / 20;
-
-        // Calcule les forces
-        let { lambdaHome, lambdaAway } = computeTeamStrengths(homeStats, awayStats);
-
-        // Ajustement position
-        lambdaHome = lambdaHome * (1 + positionDiff * 0.2);
-        lambdaAway = lambdaAway * (1 - positionDiff * 0.2);
-        lambdaHome = Math.max(0.3, Math.min(4.5, lambdaHome));
-        lambdaAway = Math.max(0.3, Math.min(4.5, lambdaAway));
-
-        // Matrice et probabilités
-        const matrix = computeScoreMatrix(lambdaHome, lambdaAway);
-        const probas = computeAllProbabilities(matrix);
-
-        // Confiance : basée sur l'écart entre les équipes et le nombre de matchs joués
-        const played = Math.min(homeStats.played || 0, awayStats.played || 0);
-        let confidence = 3;
-        if (played >= 10) confidence = 4;
-        if (played >= 20) confidence = 4;
-        if (Math.abs(positionDiff) > 0.5) confidence = 5;
-
-        return {
-            ...match,
-            analysis: {
-                lambdaHome: parseFloat(lambdaHome.toFixed(2)),
-                lambdaAway: parseFloat(lambdaAway.toFixed(2)),
-                homeStats,
-                awayStats,
-                probas,
-                confidence,
-                analyzedAt: Date.now()
-            }
-        };
-    } catch (e) {
-        return { ...match, analysis: null, error: e.message };
-    }
-}
-
-async function analyzeAllMatches() {
-    const analyzed = [];
-    // On traite par ligue pour utiliser le cache des standings
+async function analyzeAll() {
     const byLeague = {};
     for (const m of state.matches) {
         if (!byLeague[m.leagueCode]) byLeague[m.leagueCode] = [];
         byLeague[m.leagueCode].push(m);
     }
 
-    let count = 0;
-    for (const leagueCode of Object.keys(byLeague)) {
-        for (const m of byLeague[leagueCode]) {
-            const result = await analyzeMatch(m);
-            analyzed.push(result);
-            count++;
-            setStatus('Analyse ' + count + '/' + state.matches.length + '…');
+    const analyzed = [];
+    for (const code of Object.keys(byLeague)) {
+        const standings = await getStandings(code);
+        for (const m of byLeague[code]) {
+            const hs = standings[m.homeId] || { gf: 1.4, ga: 1.3, pos: 10, played: 0 };
+            const as = standings[m.awayId] || { gf: 1.2, ga: 1.5, pos: 12, played: 0 };
+
+            const leagueAvg = 1.35;
+            const hAtt = hs.gf / leagueAvg;
+            const hDef = hs.ga / leagueAvg;
+            const aAtt = as.gf / leagueAvg;
+            const aDef = as.ga / leagueAvg;
+            const homeAdv = 1.15;
+
+            let lh = hAtt * aDef * leagueAvg * homeAdv;
+            let la = aAtt * hDef * leagueAvg;
+
+            // Ajustement position
+            const posDiff = (hs.pos - as.pos) / 20;
+            lh = lh * (1 + posDiff * 0.2);
+            la = la * (1 - posDiff * 0.2);
+
+            lh = Math.max(0.3, Math.min(4.5, lh));
+            la = Math.max(0.3, Math.min(4.5, la));
+
+            const probas = calcProbas(lh, la);
+
+            let conf = 3;
+            if (Math.min(hs.played, as.played) >= 15) conf = 4;
+            if (Math.abs(posDiff) > 0.5) conf = 5;
+
+            analyzed.push({ ...m, lh: +lh.toFixed(2), la: +la.toFixed(2), probas, conf, hs, as });
         }
     }
-
-    state.analyzedMatches = analyzed;
+    state.analyzed = analyzed;
 }
 
 // ══════════════════════════════════════════════════════════════════
-// VALUE BETTING
+// VALUE
 // ══════════════════════════════════════════════════════════════════
-function computeValue(proba, cote) {
-    const realProba = proba / 100;
-    return ((realProba * cote) - 1) * 100;
-}
-
-function getValueLabel(value) {
-    if (value >= 10) return { text: '+' + value.toFixed(1) + '%', cls: 'positive high' };
-    if (value >= 5) return { text: '+' + value.toFixed(1) + '%', cls: 'positive' };
-    if (value >= 0) return { text: '+' + value.toFixed(1) + '%', cls: 'positive' };
-    return { text: value.toFixed(1) + '%', cls: 'negative' };
-}
+function value(proba, cote) { return ((proba / 100) * cote - 1) * 100; }
 
 // ══════════════════════════════════════════════════════════════════
-// RENDU DES MATCHS
+// RENDU MATCHS
 // ══════════════════════════════════════════════════════════════════
-function renderLeagueFilter() {
-    const container = $('league-filter');
-    const leaguesUsed = new Set(state.matches.map(m => m.leagueCode));
-    let html = '<div class="league-chip ' + (state.currentLeagueFilter === 'all' ? 'active' : '') + '" data-league="all">Tous</div>';
-    for (const league of LEAGUES) {
-        if (!leaguesUsed.has(league.code)) continue;
-        html += '<div class="league-chip ' + (state.currentLeagueFilter === league.code ? 'active' : '') + '" data-league="' + league.code + '">' + league.emoji + ' ' + league.name + '</div>';
-    }
-    container.innerHTML = html;
-    container.querySelectorAll('.league-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            state.currentLeagueFilter = chip.dataset.league;
-            renderLeagueFilter();
-            renderMatches();
-        });
-    });
-}
-
 function renderMatches() {
-    const container = $('matches-container');
-    let list = state.analyzedMatches;
-    if (state.currentLeagueFilter !== 'all') {
-        list = list.filter(m => m.leagueCode === state.currentLeagueFilter);
-    }
+    const c = $('matches-container');
+    if (!state.analyzed.length) { c.innerHTML = '<div class="empty">Aucun match</div>'; return; }
 
-    if (!list.length) {
-        container.innerHTML = '<div class="empty-state">Aucun match dans cette catégorie</div>';
-        return;
-    }
-
-    container.innerHTML = list.map(m => {
-        if (!m.analysis) {
-            return '<div class="match-card no-value"><div class="match-teams">' + esc(m.homeTeam) + ' vs ' + esc(m.awayTeam) + '</div><div class="empty-state" style="padding:0.5rem;">Analyse indisponible : ' + esc(m.error || '') + '</div></div>';
-        }
-        const a = m.analysis;
-        const p = a.probas;
-
-        // Proba la plus forte en 1X2
-        const max1x2 = Math.max(p.homeWin, p.draw, p.awayWin);
-        const homeFav = p.homeWin === max1x2;
-        const drawFav = p.draw === max1x2;
-        const awayFav = p.awayWin === max1x2;
-
-        // Étoiles confiance
-        const stars = '⭐'.repeat(a.confidence);
-        const confClass = 'stars-' + a.confidence;
-
-        return '<div class="match-card">' +
-            '<div class="match-header">' +
-            '<span class="match-league">' + m.leagueEmoji + ' ' + esc(m.league) + '</span>' +
-            '<span class="match-time">' + formatTime(m.kickoff) + '</span>' +
-            '</div>' +
-            '<div class="match-teams">' +
-            '<span class="team-home">' + esc(m.homeTeam) + '</span>' +
-            '<span class="team-vs">vs</span>' +
-            '<span class="team-away">' + esc(m.awayTeam) + '</span>' +
-            '</div>' +
-
-            '<div class="proba-grid">' +
-            '<div class="proba-cell ' + (homeFav ? 'favorite' : '') + '"><div class="p-label">1</div><div class="p-value">' + p.homeWin + '%</div></div>' +
-            '<div class="proba-cell ' + (drawFav ? 'favorite' : '') + '"><div class="p-label">X</div><div class="p-value">' + p.draw + '%</div></div>' +
-            '<div class="proba-cell ' + (awayFav ? 'favorite' : '') + '"><div class="p-label">2</div><div class="p-value">' + p.awayWin + '%</div></div>' +
-            '</div>' +
-
-            '<div style="font-size:0.68rem;color:var(--ink-dim);margin-bottom:0.4rem;text-transform:uppercase;font-weight:700;">Autres marchés</div>' +
-
-            '<div class="bet-row">' +
-            '<span class="bet-name">Over 2.5</span>' +
-            '<span class="bet-proba">' + p.over25 + '%</span>' +
-            '<input type="number" class="bet-input" placeholder="Cote" step="0.01" data-bet="over25_' + m.id + '">' +
-            '<span class="bet-value" id="value_over25_' + m.id + '">—</span>' +
-            '</div>' +
-
-            '<div class="bet-row">' +
-            '<span class="bet-name">Under 2.5</span>' +
-            '<span class="bet-proba">' + p.under25 + '%</span>' +
-            '<input type="number" class="bet-input" placeholder="Cote" step="0.01" data-bet="under25_' + m.id + '">' +
-            '<span class="bet-value" id="value_under25_' + m.id + '">—</span>' +
-            '</div>' +
-
-            '<div class="bet-row">' +
-            '<span class="bet-name">BTTS Oui</span>' +
-            '<span class="bet-proba">' + p.btts + '%</span>' +
-            '<input type="number" class="bet-input" placeholder="Cote" step="0.01" data-bet="btts_' + m.id + '">' +
-            '<span class="bet-value" id="value_btts_' + m.id + '">—</span>' +
-            '</div>' +
-
-            '<div class="bet-row">' +
-            '<span class="bet-name">' + (p.homeWin >= p.awayWin ? esc(m.homeTeam) : esc(m.awayTeam)) + ' gagne</span>' +
-            '<span class="bet-proba">' + Math.max(p.homeWin, p.awayWin) + '%</span>' +
-            '<input type="number" class="bet-input" placeholder="Cote" step="0.01" data-bet="win_' + m.id + '">' +
-            '<span class="bet-value" id="value_win_' + m.id + '">—</span>' +
-            '</div>' +
-
-            '<div class="match-footer">' +
-            '<span>λ ' + a.lambdaHome + ' - ' + a.lambdaAway + '</span>' +
-            '<span class="confidence-badge ' + confClass + '">' + stars + '</span>' +
-            '</div>' +
-            '</div>';
+    c.innerHTML = state.analyzed.map(m => {
+        const p = m.probas;
+        const max12 = Math.max(p.hw, p.aw);
+        return `
+        <div class="match-card">
+            <div class="match-header">
+                <span>${m.leagueEmoji} ${esc(m.league)}</span>
+                <span>${formatTime(m.kickoff)}</span>
+            </div>
+            <div class="match-teams">${esc(m.home)} <span class="vs">vs</span> ${esc(m.away)}</div>
+            <div class="proba-grid">
+                <div class="proba-cell ${p.hw === Math.max(p.hw,p.d,p.aw) ? 'fav' : ''}">
+                    <div class="lbl">1</div><div class="val">${p.hw}%</div>
+                </div>
+                <div class="proba-cell ${p.d === Math.max(p.hw,p.d,p.aw) ? 'fav' : ''}">
+                    <div class="lbl">X</div><div class="val">${p.d}%</div>
+                </div>
+                <div class="proba-cell ${p.aw === Math.max(p.hw,p.d,p.aw) ? 'fav' : ''}">
+                    <div class="lbl">2</div><div class="val">${p.aw}%</div>
+                </div>
+            </div>
+            <div class="bet-row">
+                <span class="bet-name">Over 2.5</span>
+                <span class="bet-proba">${p.o25}%</span>
+                <input type="number" placeholder="Cote" step="0.01" data-k="o25_${m.id}">
+                <span class="val" id="v_o25_${m.id}">—</span>
+            </div>
+            <div class="bet-row">
+                <span class="bet-name">Under 2.5</span>
+                <span class="bet-proba">${p.u25}%</span>
+                <input type="number" placeholder="Cote" step="0.01" data-k="u25_${m.id}">
+                <span class="val" id="v_u25_${m.id}">—</span>
+            </div>
+            <div class="bet-row">
+                <span class="bet-name">BTTS Oui</span>
+                <span class="bet-proba">${p.btts}%</span>
+                <input type="number" placeholder="Cote" step="0.01" data-k="btts_${m.id}">
+                <span class="val" id="v_btts_${m.id}">—</span>
+            </div>
+            <div class="bet-row">
+                <span class="bet-name">${p.hw >= p.aw ? esc(m.home) : esc(m.away)} gagne</span>
+                <span class="bet-proba">${max12}%</span>
+                <input type="number" placeholder="Cote" step="0.01" data-k="win_${m.id}">
+                <span class="val" id="v_win_${m.id}">—</span>
+            </div>
+        </div>`;
     }).join('');
 
-    // Ajout des listeners pour les inputs de cotes
-    container.querySelectorAll('.bet-input').forEach(inp => {
-        inp.addEventListener('input', (e) => {
-            const key = e.target.dataset.bet;
+    // Listeners
+    c.querySelectorAll('input[data-k]').forEach(inp => {
+        inp.addEventListener('input', e => {
+            const k = e.target.dataset.k;
             const cote = parseFloat(e.target.value);
-            const valueEl = $('value_' + key);
-            if (!valueEl) return;
-
-            if (!cote || cote < 1) { valueEl.textContent = '—'; valueEl.className = 'bet-value'; return; }
-
-            // Détermine la proba
-            const parts = key.split('_');
-            const market = parts[0];
-            const matchId = parts[1];
-            const match = state.analyzedMatches.find(m => String(m.id) === matchId);
-            if (!match || !match.analysis) return;
-
+            const el = $('v_' + k);
+            if (!el) return;
+            if (!cote || cote < 1) { el.textContent = '—'; el.className = 'val'; return; }
+            const [mk, mid] = k.split('_');
+            const m = state.analyzed.find(x => String(x.id) === mid);
+            if (!m) return;
             let proba = 0;
-            const p = match.analysis.probas;
-            if (market === 'over25') proba = p.over25;
-            else if (market === 'under25') proba = p.under25;
-            else if (market === 'btts') proba = p.btts;
-            else if (market === 'win') proba = Math.max(p.homeWin, p.awayWin);
-
-            const value = computeValue(proba, cote);
-            const label = getValueLabel(value);
-            valueEl.textContent = label.text;
-            valueEl.className = 'bet-value ' + label.cls;
+            if (mk === 'o25') proba = m.probas.o25;
+            else if (mk === 'u25') proba = m.probas.u25;
+            else if (mk === 'btts') proba = m.probas.btts;
+            else if (mk === 'win') proba = Math.max(m.probas.hw, m.probas.aw);
+            const val = value(proba, cote);
+            el.textContent = (val >= 0 ? '+' : '') + val.toFixed(1) + '%';
+            el.className = 'val ' + (val >= 0 ? 'positive' : 'negative');
         });
     });
 }
-<script>
+
 // ══════════════════════════════════════════════════════════════════
-// JOURNAL DE PARIS
+// BILLETS
 // ══════════════════════════════════════════════════════════════════
-function loadTrades() {
-    try { return JSON.parse(localStorage.getItem(STORAGE.trades) || '[]'); } catch (e) { return []; }
-}
-function saveTrades(trades) {
-    try { localStorage.setItem(STORAGE.trades, JSON.stringify(trades)); } catch (e) {}
-}
-function addTrade(trade) {
-    const trades = loadTrades();
-    trade.id = Date.now() + Math.random();
-    trade.openedAt = Date.now();
-    trade.status = 'pending';
-    trades.unshift(trade);
-    saveTrades(trades);
-    return trade;
-}
-function updateTrade(id, updates) {
-    const trades = loadTrades();
-    const idx = trades.findIndex(t => t.id === id);
-    if (idx < 0) return;
-    trades[idx] = { ...trades[idx], ...updates };
-    saveTrades(trades);
-}
-function closeTrade(id, result) {
-    const trades = loadTrades();
-    const idx = trades.findIndex(t => t.id === id);
-    if (idx < 0) return;
-    const trade = trades[idx];
-    trade.status = result; // 'win', 'loss', 'void'
-    trade.closedAt = Date.now();
-    // Calcul du profit
-    if (result === 'win') {
-        trade.profit = parseFloat((trade.mise * (trade.cote - 1)).toFixed(2));
-    } else if (result === 'loss') {
-        trade.profit = -trade.mise;
-    } else {
-        trade.profit = 0;
+function generateBillets() {
+    if (!state.analyzed.length) { toast('Charge d\'abord les matchs', 'warn'); return; }
+    const cands = [];
+    for (const m of state.analyzed) {
+        const p = m.probas;
+        const markets = [
+            { name: m.home + ' gagne', proba: p.hw },
+            { name: m.away + ' gagne', proba: p.aw },
+            { name: 'Over 2.5', proba: p.o25 },
+            { name: 'Under 2.5', proba: p.u25 },
+            { name: 'BTTS Oui', proba: p.btts }
+        ];
+        for (const mk of markets) {
+            if (mk.proba < 45 || mk.proba > 85) continue;
+            const fairCote = +(100 / mk.proba).toFixed(2);
+            if (fairCote < 1.30 || fairCote > 5) continue;
+            cands.push({ matchId: m.id, matchName: m.home + ' vs ' + m.away, league: m.league, bet: mk.name, proba: mk.proba, fairCote });
+        }
     }
+    cands.sort((a, b) => b.proba - a.proba);
+    const used = new Set();
+    const uniq = [];
+    for (const c of cands) {
+        if (used.has(c.matchId)) continue;
+        used.add(c.matchId);
+        uniq.push(c);
+    }
+    if (uniq.length < 2) { $('billets-container').innerHTML = '<div class="empty">Pas assez de matchs pour générer</div>'; return; }
+
+    const billets = [];
+    billets.push({ type: 'simple', label: 'Simple', sels: [uniq[0]] });
+    const safe = uniq.filter(c => c.proba >= 60).slice(0, 3);
+    if (safe.length >= 2) billets.push({ type: 'safe', label: 'Safe', sels: safe });
+    const val = uniq.filter(c => c.proba >= 50 && c.proba <= 75).slice(0, 4);
+    if (val.length >= 3) billets.push({ type: 'value', label: 'Value', sels: val });
+    const risky = uniq.slice(0, 5);
+    if (risky.length >= 4) billets.push({ type: 'risky', label: 'Risqué', sels: risky });
+
+    $('billets-container').innerHTML = billets.map(b => {
+        const totCote = b.sels.reduce((a, s) => a * s.fairCote, 1);
+        const totProba = b.sels.reduce((a, s) => a * (s.proba / 100), 1) * 100;
+        const stars = '⭐'.repeat(Math.max(2, Math.min(5, Math.round(totProba / 20))));
+        return `<div class="match-card" style="border-left:4px solid var(--${b.type === 'risky' ? 'warn' : b.type === 'safe' ? 'success' : b.type === 'value' ? 'info' : 'value'})">
+            <div class="match-header"><strong>${b.label}</strong><strong>@ ${totCote.toFixed(2)}</strong></div>
+            ${b.sels.map(s => `<div style="padding:0.5rem;background:var(--panel-2);border-radius:6px;margin-bottom:0.3rem;font-size:0.8rem;">
+                <div><strong>${esc(s.bet)}</strong></div>
+                <div style="font-size:0.7rem;color:var(--ink-dim);">${esc(s.matchName)} · ${esc(s.league)}</div>
+                <div style="font-size:0.7rem;">Cote ${s.fairCote} · Proba ${s.proba}%</div>
+            </div>`).join('')}
+            <div style="font-size:0.75rem;text-align:center;">Confiance : <strong>${totProba.toFixed(0)}%</strong> ${stars}</div>
+        </div>`;
+    }).join('');
+    toast('Billets générés ✓', 'success');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// JOURNAL
+// ══════════════════════════════════════════════════════════════════
+function renderJournal() {
+    const trades = getTrades();
+    const open = trades.filter(t => t.status === 'pending');
+    const closed = trades.filter(t => t.status !== 'pending').slice(0, 30);
+
+    $('open-trades').innerHTML = open.length ? open.map(t => `
+        <div class="trade">
+            <div class="trade-header">
+                <span class="trade-match">${esc(t.match)}</span>
+                <span style="font-size:0.7rem;color:var(--info);">EN COURS</span>
+            </div>
+            <div class="trade-bet">🎯 ${esc(t.bet)}</div>
+            <div class="trade-info">
+                <span>Cote : <strong>${t.cote}</strong></span>
+                <span>Mise : <strong>${t.mise}€</strong></span>
+                <span>${esc(t.league || '')}</span>
+            </div>
+            <div class="trade-actions">
+                <button class="btn btn-success" onclick="closeT('${t.id}','win')">✅</button>
+                <button class="btn btn-danger" onclick="closeT('${t.id}','loss')">❌</button>
+                <button class="btn btn-secondary" onclick="closeT('${t.id}','void')">⚖️</button>
+            </div>
+        </div>`).join('') : '<div class="empty">Aucun pari en cours</div>';
+
+    $('closed-trades').innerHTML = closed.length ? closed.map(t => `
+        <div class="trade ${t.status}">
+            <div class="trade-header">
+                <span class="trade-match">${esc(t.match)}</span>
+                <span>${t.status === 'win' ? '✅' : t.status === 'loss' ? '❌' : '⚖️'}</span>
+            </div>
+            <div class="trade-bet">${esc(t.bet)}</div>
+            <div class="trade-info">
+                <span>Cote : ${t.cote}</span>
+                <span>Profit : <strong style="color:${t.profit > 0 ? 'var(--success)' : t.profit < 0 ? 'var(--error)' : 'var(--ink-dim)'}">${t.profit > 0 ? '+' : ''}${t.profit}€</strong></span>
+            </div>
+        </div>`).join('') : '<div class="empty">Aucun pari terminé</div>';
+}
+
+window.closeT = function(id, res) {
+    const trades = getTrades();
+    const i = trades.findIndex(t => t.id == id);
+    if (i < 0) return;
+    trades[i].status = res;
+    trades[i].closedAt = Date.now();
+    if (res === 'win') trades[i].profit = +(trades[i].mise * (trades[i].cote - 1)).toFixed(2);
+    else if (res === 'loss') trades[i].profit = -trades[i].mise;
+    else trades[i].profit = 0;
     saveTrades(trades);
-
-    // Notification Telegram
-    const emoji = result === 'win' ? '🎉' : result === 'loss' ? '❌' : '⚖️';
-    const label = result === 'win' ? 'GAGNÉ' : result === 'loss' ? 'PERDU' : 'REMBOURSÉ';
-    sendTelegramMessage(
-        `${emoji} *Pari terminé*\n\n` +
-        `⚽ ${trade.match}\n` +
-        `🎯 ${trade.bet}\n` +
-        `💰 Cote : ${trade.cote}\n` +
-        `📊 Résultat : *${label}*\n` +
-        `💵 Profit : ${trade.profit > 0 ? '+' : ''}${trade.profit}€`
-    );
-
-    renderTrades();
+    renderJournal();
     renderStats();
-}
-
-function renderTrades() {
-    const trades = loadTrades();
-    const pending = trades.filter(t => t.status === 'pending');
-    const closed = trades.filter(t => t.status !== 'pending').slice(0, 50);
-
-    $('open-count').textContent = pending.length ? '(' + pending.length + ')' : '';
-    $('closed-count').textContent = closed.length ? '(' + closed.length + ')' : '';
-
-    // Pending
-    const openList = $('open-trades-list');
-    if (!pending.length) {
-        openList.innerHTML = '<div class="empty-state">Aucun pari en cours</div>';
-    } else {
-        openList.innerHTML = pending.map(t => `
-            <div class="trade-item open">
-                <div class="trade-header">
-                    <span class="trade-match">${esc(t.match)}</span>
-                    <span class="trade-result-badge pending">EN COURS</span>
-                </div>
-                <div class="trade-bet">🎯 ${esc(t.bet)}</div>
-                <div class="trade-info">
-                    <div class="ti-item"><div class="ti-label">Cote</div><div class="ti-value">${t.cote}</div></div>
-                    <div class="ti-item"><div class="ti-label">Mise</div><div class="ti-value">${t.mise}€</div></div>
-                    <div class="ti-item"><div class="ti-label">Type</div><div class="ti-value">${esc(t.type)}</div></div>
-                    <div class="ti-item"><div class="ti-label">Ligue</div><div class="ti-value">${esc(t.league || 'N/A')}</div></div>
-                </div>
-                <div class="trade-footer">
-                    <span>Ouvert le ${formatDate(t.openedAt)}</span>
-                </div>
-                <div class="trade-actions">
-                    <button class="btn-secondary btn-success" onclick="manualCloseTrade('${t.id}', 'win')">✅ Gagné</button>
-                    <button class="btn-secondary btn-danger" onclick="manualCloseTrade('${t.id}', 'loss')">❌ Perdu</button>
-                    <button class="btn-secondary" onclick="manualCloseTrade('${t.id}', 'void')">⚖️ Remboursé</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Closed
-    const closedList = $('closed-trades-list');
-    if (!closed.length) {
-        closedList.innerHTML = '<div class="empty-state">Aucun pari terminé</div>';
-    } else {
-        closedList.innerHTML = closed.map(t => `
-            <div class="trade-item ${t.status}">
-                <div class="trade-header">
-                    <span class="trade-match">${esc(t.match)}</span>
-                    <span class="trade-result-badge ${t.status}">${t.status === 'win' ? 'GAGNÉ' : t.status === 'loss' ? 'PERDU' : 'REMBOURSÉ'}</span>
-                </div>
-                <div class="trade-bet">🎯 ${esc(t.bet)}</div>
-                <div class="trade-info">
-                    <div class="ti-item"><div class="ti-label">Cote</div><div class="ti-value">${t.cote}</div></div>
-                    <div class="ti-item"><div class="ti-label">Mise</div><div class="ti-value">${t.mise}€</div></div>
-                    <div class="ti-item"><div class="ti-label">Profit</div><div class="ti-value" style="color:${t.profit > 0 ? 'var(--success)' : t.profit < 0 ? 'var(--error)' : 'var(--ink)'}">${t.profit > 0 ? '+' : ''}${t.profit}€</div></div>
-                    <div class="ti-item"><div class="ti-label">Ligue</div><div class="ti-value">${esc(t.league || 'N/A')}</div></div>
-                </div>
-                <div class="trade-footer">
-                    <span>Fermé le ${formatDate(t.closedAt)}</span>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-window.manualCloseTrade = function(id, result) {
-    if (!confirm('Confirmer : ' + (result === 'win' ? 'GAGNÉ' : result === 'loss' ? 'PERDU' : 'REMBOURSÉ') + ' ?')) return;
-    closeTrade(id, result);
+    toast('Pari fermé ✓', 'success');
 };
 
 // ══════════════════════════════════════════════════════════════════
-// STATISTIQUES
+// STATS
 // ══════════════════════════════════════════════════════════════════
-function computeStats(trades) {
-    const closed = trades.filter(t => t.status !== 'pending');
-    if (!closed.length) {
-        return { total: 0, wins: 0, losses: 0, voids: 0, winrate: 0, profit: 0, roi: 0, avgCote: 0, totalMise: 0, best: null, worst: null };
-    }
-    const wins = closed.filter(t => t.status === 'win').length;
-    const losses = closed.filter(t => t.status === 'loss').length;
-    const voids = closed.filter(t => t.status === 'void').length;
-    const profit = closed.reduce((s, t) => s + (t.profit || 0), 0);
-    const totalMise = closed.reduce((s, t) => s + t.mise, 0);
-    const winrate = (wins + losses) > 0 ? Math.round(wins / (wins + losses) * 100) : 0;
-    const avgCote = closed.length ? parseFloat((closed.reduce((s, t) => s + t.cote, 0) / closed.length).toFixed(2)) : 0;
-    const roi = totalMise > 0 ? parseFloat(((profit / totalMise) * 100).toFixed(1)) : 0;
-    const sorted = [...closed].sort((a, b) => (b.profit || 0) - (a.profit || 0));
+function calcStats(trades) {
+    const cl = trades.filter(t => t.status !== 'pending');
+    if (!cl.length) return { total: 0, w: 0, l: 0, wr: 0, pf: 0, roi: 0, mise: 0, cote: 0 };
+    const w = cl.filter(t => t.status === 'win').length;
+    const l = cl.filter(t => t.status === 'loss').length;
+    const pf = cl.reduce((a, t) => a + (t.profit || 0), 0);
+    const mise = cl.reduce((a, t) => a + t.mise, 0);
+    const cote = cl.reduce((a, t) => a + t.cote, 0) / cl.length;
     return {
-        total: closed.length, wins, losses, voids, winrate,
-        profit: parseFloat(profit.toFixed(2)),
-        roi, avgCote, totalMise: parseFloat(totalMise.toFixed(2)),
-        best: sorted[0], worst: sorted[sorted.length - 1]
+        total: cl.length, w, l,
+        wr: (w + l) > 0 ? Math.round(w / (w + l) * 100) : 0,
+        pf: +pf.toFixed(2),
+        roi: mise > 0 ? +((pf / mise) * 100).toFixed(1) : 0,
+        mise: +mise.toFixed(2),
+        cote: +cote.toFixed(2)
     };
 }
 
-function renderStatCards(container, s) {
-    container.innerHTML = `
-        <div class="stat-card"><div class="st-label">Paris</div><div class="st-value neutral">${s.total}</div></div>
-        <div class="stat-card"><div class="st-label">Gagnés</div><div class="st-value win">${s.wins}</div></div>
-        <div class="stat-card"><div class="st-label">Perdus</div><div class="st-value loss">${s.losses}</div></div>
-        <div class="stat-card"><div class="st-label">Winrate</div><div class="st-value ${s.winrate >= 55 ? 'win' : s.winrate >= 45 ? 'neutral' : 'loss'}">${s.winrate}%</div></div>
-        <div class="stat-card"><div class="st-label">Profit</div><div class="st-value ${s.profit >= 0 ? 'win' : 'loss'}">${s.profit > 0 ? '+' : ''}${s.profit}€</div></div>
-        <div class="stat-card"><div class="st-label">ROI</div><div class="st-value ${s.roi >= 0 ? 'win' : 'loss'}">${s.roi > 0 ? '+' : ''}${s.roi}%</div></div>
-        <div class="stat-card"><div class="st-label">Cote moy.</div><div class="st-value neutral">${s.avgCote}</div></div>
-        <div class="stat-card"><div class="st-label">Misé</div><div class="st-value neutral">${s.totalMise}€</div></div>
-    `;
-}
-
 function renderStats() {
-    const trades = loadTrades();
-    renderStatCards($('stats-global'), computeStats(trades));
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const weekTrades = trades.filter(t => t.status !== 'pending' && (t.closedAt || 0) > weekAgo);
-    renderStatCards($('stats-week'), computeStats(weekTrades));
+    const trades = getTrades();
+    const g = calcStats(trades);
+    $('stats-global').innerHTML = `
+        <div class="stat"><div class="lbl">Paris</div><div class="val">${g.total}</div></div>
+        <div class="stat"><div class="lbl">Winrate</div><div class="val ${g.wr >= 55 ? 'win' : g.wr >= 45 ? '' : 'loss'}">${g.wr}%</div></div>
+        <div class="stat"><div class="lbl">Gagnés</div><div class="val win">${g.w}</div></div>
+        <div class="stat"><div class="lbl">Perdus</div><div class="val loss">${g.l}</div></div>
+        <div class="stat"><div class="lbl">Profit</div><div class="val ${g.pf >= 0 ? 'win' : 'loss'}">${g.pf > 0 ? '+' : ''}${g.pf}€</div></div>
+        <div class="stat"><div class="lbl">ROI</div><div class="val ${g.roi >= 0 ? 'win' : 'loss'}">${g.roi > 0 ? '+' : ''}${g.roi}%</div></div>
+        <div class="stat"><div class="lbl">Cote moy.</div><div class="val">${g.cote}</div></div>
+        <div class="stat"><div class="lbl">Misé</div><div class="val">${g.mise}€</div></div>`;
+
+    const weekAgo = Date.now() - 7 * 86400000;
+    const w = calcStats(trades.filter(t => (t.closedAt || 0) > weekAgo));
+    $('stats-week').innerHTML = `
+        <div class="stat"><div class="lbl">Paris</div><div class="val">${w.total}</div></div>
+        <div class="stat"><div class="lbl">Winrate</div><div class="val ${w.wr >= 55 ? 'win' : w.wr >= 45 ? '' : 'loss'}">${w.wr}%</div></div>
+        <div class="stat"><div class="lbl">Profit</div><div class="val ${w.pf >= 0 ? 'win' : 'loss'}">${w.pf > 0 ? '+' : ''}${w.pf}€</div></div>
+        <div class="stat"><div class="lbl">ROI</div><div class="val ${w.roi >= 0 ? 'win' : 'loss'}">${w.roi > 0 ? '+' : ''}${w.roi}%</div></div>`;
 
     // Schémas
-    const patterns = detectPatterns(trades);
-    $('patterns-analysis').innerHTML = patterns.length
-        ? patterns.map(p => `<div style="padding:0.5rem;background:var(--panel-2);border-radius:6px;border-left:3px solid ${p.color};margin-bottom:0.4rem;"><div style="font-weight:700;color:${p.color};margin-bottom:0.2rem;">${esc(p.title)}</div><div>${esc(p.text)}</div></div>`).join('')
-        : '<div class="empty-state">Pas assez de données</div>';
-}
-
-function detectPatterns(trades) {
-    const closed = trades.filter(t => t.status !== 'pending');
-    const patterns = [];
-    if (closed.length < 3) return patterns;
-
-    // Winrate par ligue
+    const cl = trades.filter(t => t.status !== 'pending');
     const byLeague = {};
-    for (const t of closed) {
-        if (!byLeague[t.league]) byLeague[t.league] = { wins: 0, losses: 0 };
-        if (t.status === 'win') byLeague[t.league].wins++;
-        else if (t.status === 'loss') byLeague[t.league].losses++;
+    for (const t of cl) {
+        if (!t.league) continue;
+        if (!byLeague[t.league]) byLeague[t.league] = { w: 0, l: 0 };
+        if (t.status === 'win') byLeague[t.league].w++;
+        else if (t.status === 'loss') byLeague[t.league].l++;
     }
-    for (const [league, s] of Object.entries(byLeague)) {
-        const total = s.wins + s.losses;
-        if (total >= 3) {
-            const wr = Math.round(s.wins / total * 100);
-            if (wr < 40) patterns.push({ title: '🔴 ' + league, text: 'Winrate faible : ' + wr + '% sur ' + total + ' paris', color: 'var(--error)' });
-            else if (wr > 70) patterns.push({ title: '🟢 ' + league, text: 'Excellent winrate : ' + wr + '%', color: 'var(--success)' });
+    const patterns = [];
+    for (const [lg, s] of Object.entries(byLeague)) {
+        const tot = s.w + s.l;
+        if (tot >= 3) {
+            const wr = Math.round(s.w / tot * 100);
+            if (wr < 40) patterns.push({ t: '🔴 ' + lg, d: 'Winrate faible : ' + wr + '% sur ' + tot + ' paris', c: 'var(--error)' });
+            else if (wr > 70) patterns.push({ t: '🟢 ' + lg, d: 'Excellent : ' + wr + '%', c: 'var(--success)' });
         }
     }
-
-    // Winrate par type de pari
-    const byType = {};
-    for (const t of closed) {
-        if (!byType[t.type]) byType[t.type] = { wins: 0, losses: 0 };
-        if (t.status === 'win') byType[t.type].wins++;
-        else if (t.status === 'loss') byType[t.type].losses++;
-    }
-    for (const [type, s] of Object.entries(byType)) {
-        const total = s.wins + s.losses;
-        if (total >= 3) {
-            const wr = Math.round(s.wins / total * 100);
-            if (wr < 40) patterns.push({ title: '⚠️ ' + type, text: 'Winrate faible : ' + wr + '% — évite ce type de pari', color: 'var(--warn)' });
-        }
-    }
-
-    // Cotes trop basses ou trop hautes
-    const lowCotes = closed.filter(t => t.cote < 1.5);
-    if (lowCotes.length >= 5) {
-        const wr = Math.round(lowCotes.filter(t => t.status === 'win').length / lowCotes.length * 100);
-        if (wr < 60) patterns.push({ title: '📉 Cotes basses', text: 'Winrate ' + wr + '% sur cotes < 1.5 — pas rentable', color: 'var(--warn)' });
-    }
-
-    return patterns;
+    $('patterns').innerHTML = patterns.length ? patterns.map(p => `
+        <div style="padding:0.6rem;background:var(--panel-2);border-radius:6px;border-left:3px solid ${p.c};margin-bottom:0.4rem;">
+            <div style="font-weight:700;color:${p.c};margin-bottom:0.2rem;">${esc(p.t)}</div>
+            <div style="font-size:0.8rem;">${esc(p.d)}</div>
+        </div>`).join('') : '<div class="empty">Pas assez de données</div>';
 }
 
 // ══════════════════════════════════════════════════════════════════
-// GÉNÉRATION DE BILLETS
+// PDF
 // ══════════════════════════════════════════════════════════════════
-function generateBillets() {
-    const filters = getFilters();
-    const candidates = [];
-
-    // Pour chaque match analysé, on cherche les value bets
-    for (const m of state.analyzedMatches) {
-        if (!m.analysis) continue;
-        const p = m.analysis.probas;
-
-        // On teste plusieurs marchés
-        const markets = [
-            { name: m.homeTeam + ' gagne', proba: p.homeWin },
-            { name: m.awayTeam + ' gagne', proba: p.awayWin },
-            { name: 'Over 2.5 buts', proba: p.over25 },
-            { name: 'Under 2.5 buts', proba: p.under25 },
-            { name: 'BTTS Oui', proba: p.btts }
-        ];
-
-        for (const mk of markets) {
-            // On considère la cote "juste" = 100 / proba
-            // On suppose qu'un bookmaker propose cote juste × 1.05 → value 5%
-            // (l'utilisateur pourra affiner manuellement plus tard)
-            const fairCote = 100 / mk.proba;
-            // On garde seulement les probas entre 45% et 85% (ni trop sûr, ni trop risqué)
-            if (mk.proba < 45 || mk.proba > 85) continue;
-            if (fairCote < filters.minCote || fairCote > filters.maxCote) continue;
-            candidates.push({
-                matchId: m.id,
-                matchName: m.homeTeam + ' vs ' + m.awayTeam,
-                league: m.league,
-                bet: mk.name,
-                proba: mk.proba,
-                fairCote: parseFloat(fairCote.toFixed(2)),
-                confidence: m.analysis.confidence
-            });
-        }
-    }
-
-    // Trie par probabilité décroissante
-    candidates.sort((a, b) => b.proba - a.proba);
-
-    // Éviter 2 paris sur le même match
-    const usedMatches = new Set();
-    const uniqueCandidates = [];
-    for (const c of candidates) {
-        if (usedMatches.has(c.matchId)) continue;
-        usedMatches.add(c.matchId);
-        uniqueCandidates.push(c);
-    }
-
-    if (uniqueCandidates.length < 2) {
-        $('billets-container').innerHTML = '<div class="empty-state">Pas assez de matchs pour générer des billets</div>';
-        return;
-    }
-
-    // Génération des billets
-    const billets = [];
-
-    // SIMPLE : meilleur pari
-    billets.push({
-        type: 'simple',
-        label: 'Simple',
-        selections: [uniqueCandidates[0]]
-    });
-
-    // SAFE : 2-3 paris à forte confiance
-    const safeCandidates = uniqueCandidates.filter(c => c.proba >= 60).slice(0, 3);
-    if (safeCandidates.length >= 2) {
-        billets.push({
-            type: 'safe',
-            label: 'Safe',
-            selections: safeCandidates
-        });
-    }
-
-    // VALUE : 3-4 paris avec cote moyenne 2-3
-    const valueCandidates = uniqueCandidates.filter(c => c.proba >= 50 && c.proba <= 75).slice(0, 4);
-    if (valueCandidates.length >= 3) {
-        billets.push({
-            type: 'value',
-            label: 'Value',
-            selections: valueCandidates
-        });
-    }
-
-    // RISQUÉ : 5 paris
-    const riskyCandidates = uniqueCandidates.slice(0, 5);
-    if (riskyCandidates.length >= 4) {
-        billets.push({
-            type: 'risky',
-            label: 'Risqué',
-            selections: riskyCandidates
-        });
-    }
-
-    renderBillets(billets);
-}
-
-function renderBillets(billets) {
-    const container = $('billets-container');
-    if (!billets.length) {
-        container.innerHTML = '<div class="empty-state">Aucun billet généré</div>';
-        return;
-    }
-
-    container.innerHTML = billets.map(b => {
-        const totalCote = b.selections.reduce((acc, s) => acc * s.fairCote, 1);
-        const totalProba = b.selections.reduce((acc, s) => acc * (s.proba / 100), 1) * 100;
-        const confidence = Math.round(totalProba);
-        const stars = '⭐'.repeat(Math.max(2, Math.min(5, Math.round(confidence / 20))));
-
-        return `
-            <div class="billet-card ${b.type}">
-                <div class="billet-header">
-                    <span class="billet-type ${b.type}">${b.label}</span>
-                    <span class="billet-cote">@ ${totalCote.toFixed(2)}</span>
-                </div>
-                <div class="billet-selections">
-                    ${b.selections.map(s => `
-                        <div class="billet-selection">
-                            <span>${esc(s.bet)}</span>
-                            <span><strong>${s.fairCote}</strong> (${s.proba}%)</span>
-                        </div>
-                        <div style="font-size:0.65rem;color:var(--ink-faint);margin-bottom:0.3rem;padding-left:0.3rem;">${esc(s.matchName)} — ${esc(s.league)}</div>
-                    `).join('')}
-                </div>
-                <div class="billet-footer">
-                    <span>Proba combinée : <strong>${confidence}%</strong></span>
-                    <span>${stars}</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// ══════════════════════════════════════════════════════════════════
-// TELEGRAM
-// ══════════════════════════════════════════════════════════════════
-async function sendTelegramMessage(text) {
-    const cfg = getTelegramConfig();
-    if (!cfg.token || !cfg.chatId) return false;
-    try {
-        const res = await fetch('https://api.telegram.org/bot' + cfg.token + '/sendMessage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: cfg.chatId, text, parse_mode: 'Markdown' })
-        });
-        const data = await res.json();
-        return data.ok;
-    } catch (e) { return false; }
-}
-
-// ══════════════════════════════════════════════════════════════════
-// RAPPORT PDF
-// ══════════════════════════════════════════════════════════════════
-function buildWeeklyReport() {
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const trades = loadTrades();
-    const weekClosed = trades.filter(t => t.status !== 'pending' && (t.closedAt || 0) > weekAgo);
-    const stats = computeStats(weekClosed);
-    const patterns = detectPatterns(trades);
-
-    let html = '';
-    html += '<h3>📅 Semaine du ' + formatDateLong(weekAgo) + '</h3>';
-    html += '<p><strong>Paris fermés :</strong> ' + stats.total + '</p>';
-
-    html += '<h3>📊 Résultats</h3><ul>';
-    html += '<li>Gagnés : <strong>' + stats.wins + '</strong></li>';
-    html += '<li>Perdus : <strong>' + stats.losses + '</strong></li>';
-    html += '<li>Winrate : <strong>' + stats.winrate + '%</strong></li>';
-    html += '<li>Profit : <strong>' + (stats.profit > 0 ? '+' : '') + stats.profit + '€</strong></li>';
-    html += '<li>ROI : <strong>' + (stats.roi > 0 ? '+' : '') + stats.roi + '%</strong></li>';
-    html += '<li>Cote moyenne : <strong>' + stats.avgCote + '</strong></li>';
-    html += '</ul>';
-
-    html += '<h3>🔍 Schémas détectés</h3>';
-    if (patterns.length) {
-        html += '<ul>';
-        patterns.forEach(p => html += '<li>' + esc(p.title) + ' : ' + esc(p.text) + '</li>');
-        html += '</ul>';
-    } else {
-        html += '<p>Pas assez de données.</p>';
-    }
-
-    html += '<h3>💡 Recommandations</h3><ul>';
-    if (stats.winrate >= 60) html += '<li>✅ Excellent winrate. Continue ta stratégie.</li>';
-    else if (stats.winrate >= 45) html += '<li>⚠️ Winrate moyen. Analyse les pertes.</li>';
-    else if (stats.total > 0) html += '<li>🔴 Winrate faible. Révise ta stratégie.</li>';
-    if (stats.profit < 0) html += '<li>💰 Réduis la taille des mises jusqu\'à retrouver la confiance.</li>';
-    else if (stats.profit > 0) html += '<li>💰 Augmente progressivement les mises gagnantes.</li>';
-    html += '</ul>';
-
-    return { html, stats, weekClosed, patterns };
-}
-
 function generatePDF() {
     if (!window.jspdf?.jsPDF) { toast('jsPDF non chargé', 'error'); return; }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const report = buildWeeklyReport();
-    const stats = report.stats;
-
+    const trades = getTrades();
+    const s = calcStats(trades);
     let y = 15;
-    doc.setFontSize(20); doc.setTextColor(30, 30, 30);
-    doc.text('Rapport Foot Value Pro', 15, y); y += 10;
-    doc.setFontSize(10); doc.setTextColor(120);
-    doc.text('Semaine du ' + formatDateLong(Date.now() - 7 * 24 * 60 * 60 * 1000), 15, y); y += 12;
+    doc.setFontSize(20); doc.text('Rapport Foot Value', 15, y); y += 12;
+    doc.setFontSize(12); doc.text('Statistiques globales', 15, y); y += 7;
+    doc.setFontSize(10);
+    doc.text('Paris : ' + s.total, 15, y); y += 5;
+    doc.text('Gagnes : ' + s.w, 15, y); y += 5;
+    doc.text('Perdus : ' + s.l, 15, y); y += 5;
+    doc.text('Winrate : ' + s.wr + '%', 15, y); y += 5;
+    doc.text('Profit : ' + (s.pf > 0 ? '+' : '') + s.pf + ' EUR', 15, y); y += 5;
+    doc.text('ROI : ' + (s.roi > 0 ? '+' : '') + s.roi + '%', 15, y); y += 5;
+    doc.save('rapport-' + Date.now() + '.pdf');
+    toast('PDF généré ✓', 'success');
+}
 
-    doc.setFontSize(14); doc.setTextColor(30, 30, 30);
-    doc.text('Statistiques', 15, y); y += 7;
-    doc.setFontSize(10); doc.setTextColor(80);
-    doc.text('Paris : ' + stats.total, 15, y); y += 5;
-    doc.text('Gagnés : ' + stats.wins, 15, y); y += 5;
-    doc.text('Perdus : ' + stats.losses, 15, y); y += 5;
-    doc.text('Winrate : ' + stats.winrate + '%', 15, y); y += 5;
-    doc.text('Profit : ' + (stats.profit > 0 ? '+' : '') + stats.profit + ' EUR', 15, y); y += 5;
-    doc.text('ROI : ' + (stats.roi > 0 ? '+' : '') + stats.roi + '%', 15, y); y += 12;
-
-    doc.setFontSize(14); doc.setTextColor(30, 30, 30);
-    doc.text('Erreurs et schémas', 15, y); y += 7;
-    doc.setFontSize(10); doc.setTextColor(80);
-    if (report.patterns.length) {
-        for (const p of report.patterns) {
-            if (y > 270) { doc.addPage(); y = 15; }
-            const lines = doc.splitTextToSize('• ' + p.title + ' : ' + p.text, 180);
-            for (const line of lines) { doc.text(line, 15, y); y += 5; }
-        }
-    } else {
-        doc.text('Pas assez de donnees.', 15, y); y += 8;
-    }
-
-    doc.save('rapport-foot-value-' + Date.now() + '.pdf');
-    toast('Rapport PDF généré ✓', 'success');
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function showView(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+    $('view-' + name).classList.add('active');
+    document.querySelector('.menu-item[data-view="' + name + '"]').classList.add('active');
+    $('current-view').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    $('menu-overlay').classList.remove('visible');
+    if (name === 'journal') renderJournal();
+    if (name === 'stats') renderStats();
 }
 
 // ══════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════
-function initTheme() {
-    let dark = false;
-    try { dark = localStorage.getItem(STORAGE.dark) === '1'; } catch (e) {}
-    if (!dark && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) dark = true;
+function init() {
+    // Theme
+    const dark = localStorage.getItem(S.dark) === '1';
     document.body.classList.toggle('dark', dark);
     $('theme-toggle').textContent = dark ? '☀️' : '🌙';
-}
-function toggleTheme() {
-    const dark = !document.body.classList.contains('dark');
-    document.body.classList.toggle('dark', dark);
-    $('theme-toggle').textContent = dark ? '☀️' : '🌙';
-    try { localStorage.setItem(STORAGE.dark, dark ? '1' : '0'); } catch (e) {}
-}
+    $('theme-toggle').onclick = () => {
+        const d = !document.body.classList.contains('dark');
+        document.body.classList.toggle('dark', d);
+        $('theme-toggle').textContent = d ? '☀️' : '🌙';
+        localStorage.setItem(S.dark, d ? '1' : '0');
+    };
 
-function initTabs() {
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            $('panel-' + tab.dataset.tab).classList.add('active');
-            if (tab.dataset.tab === 'journal') renderTrades();
-            if (tab.dataset.tab === 'stats') renderStats();
-            if (tab.dataset.tab === 'report') { const r = buildWeeklyReport(); $('report-preview').innerHTML = r.html; }
-        });
+    // Menu
+    $('menu-btn').onclick = () => $('menu-overlay').classList.add('visible');
+    $('menu-overlay').onclick = (e) => { if (e.target.id === 'menu-overlay') $('menu-overlay').classList.remove('visible'); };
+    document.querySelectorAll('.menu-item').forEach(m => {
+        m.onclick = () => showView(m.dataset.view);
     });
-}
 
-function initSections() {
-    document.querySelectorAll('.section-header').forEach(h => {
-        h.addEventListener('click', () => h.parentElement.classList.toggle('open'));
-    });
-}
-
-function initSettings() {
-    // API token
-    const tk = getApiToken();
-    if (tk) $('api-token-input').value = tk;
-    $('save-api-token')?.addEventListener('click', async () => {
-        const v = $('api-token-input').value.trim();
-        try { localStorage.setItem(STORAGE.apiToken, v); } catch (e) {}
+    // Réglages
+    if (getApi()) $('api-token').value = getApi();
+    $('save-api').onclick = async () => {
+        const v = $('api-token').value.trim();
+        localStorage.setItem(S.api, v);
         if (v) {
             const ok = await testConnection();
-            toast(ok ? 'Token valide ✓' : 'Token invalide', ok ? 'success' : 'error');
-        } else toast('Token supprimé', 'warn');
-    });
+            if (ok) {
+                toast('Token valide ✓', 'success');
+                $('info-box').style.display = 'none';
+            } else {
+                toast('Token invalide', 'error');
+            }
+        }
+    };
 
-    // Bankroll
-    $('bankroll-input').value = getBankroll();
-    $('mise-pct-input').value = getMisePct();
-    $('save-bankroll')?.addEventListener('click', () => {
+    $('bankroll').value = getBank();
+    $('mise-pct').value = getMisePct();
+    $('save-bankroll').onclick = () => {
+        localStorage.setItem(S.bankroll, $('bankroll').value);
+        localStorage.setItem(S.misePct, $('mise-pct').value);
+        toast('Enregistré ✓', 'success');
+    };
+
+    const tg = getTg();
+    if (tg.token) $('tg-token').value = tg.token;
+    if (tg.chatId) $('tg-chat').value = tg.chatId;
+    $('save-tg').onclick = () => {
+        localStorage.setItem(S.tg, JSON.stringify({ token: $('tg-token').value.trim(), chatId: $('tg-chat').value.trim() }));
+        toast('Enregistré ✓', 'success');
+    };
+    $('test-tg').onclick = async () => {
+        const t = getTg();
+        if (!t.token || !t.chatId) { toast('Remplis token et chat', 'warn'); return; }
         try {
-            localStorage.setItem(STORAGE.bankroll, $('bankroll-input').value);
-            localStorage.setItem(STORAGE.misePct, $('mise-pct-input').value);
-        } catch (e) {}
-        toast('Bankroll enregistrée ✓', 'success');
-    });
+            const r = await fetch('https://api.telegram.org/bot' + t.token + '/sendMessage', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: t.chatId, text: '⚽ Foot Value Pro — Test OK ✅' })
+            });
+            const d = await r.json();
+            toast(d.ok ? 'Envoyé ✓' : 'Erreur', d.ok ? 'success' : 'error');
+        } catch (e) { toast('Erreur', 'error'); }
+    };
 
-    // Filtres
-    const f = getFilters();
-    $('min-value-input').value = f.minValue;
-    $('min-confidence-input').value = f.minConfidence;
-    $('min-cote-input').value = f.minCote;
-    $('max-cote-input').value = f.maxCote;
-    $('save-filters')?.addEventListener('click', () => {
-        try {
-            localStorage.setItem(STORAGE.filters, JSON.stringify({
-                minValue: parseFloat($('min-value-input').value),
-                minConfidence: parseInt($('min-confidence-input').value),
-                minCote: parseFloat($('min-cote-input').value),
-                maxCote: parseFloat($('max-cote-input').value)
-            }));
-        } catch (e) {}
-        toast('Filtres enregistrés ✓', 'success');
-    });
-
-    // Telegram
-    const cfg = getTelegramConfig();
-    if (cfg.token) $('telegram-token').value = cfg.token;
-    if (cfg.chatId) $('telegram-chatid').value = cfg.chatId;
-    $('save-telegram')?.addEventListener('click', () => {
-        const token = $('telegram-token').value.trim();
-        const chatId = $('telegram-chatid').value.trim();
-        try { localStorage.setItem(STORAGE.telegram, JSON.stringify({ token, chatId })); } catch (e) {}
-        toast('Config Telegram ✓', 'success');
-    });
-    $('test-telegram')?.addEventListener('click', async () => {
-        const ok = await sendTelegramMessage('⚽ *Foot Value Pro* — Test\n\n✅ Ton bot est configuré.\n\nTu recevras ici les value bets détectées et les notifications de résultats.');
-        toast(ok ? 'Envoyé ✓' : 'Erreur envoi', ok ? 'success' : 'error');
-    });
-
-    // Danger
-    $('clear-all-btn')?.addEventListener('click', () => {
+    $('clear-all').onclick = () => {
         if (!confirm('Effacer toutes les données ?')) return;
-        localStorage.removeItem(STORAGE.trades);
-        localStorage.removeItem(STORAGE.matchesCache);
-        renderTrades(); renderStats();
-        toast('Données effacées', 'warn');
-    });
-    $('export-data-btn')?.addEventListener('click', () => {
-        const data = { trades: loadTrades(), exportDate: new Date().toISOString() };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'foot-value-backup-' + Date.now() + '.json'; a.click();
-        URL.revokeObjectURL(url);
-        toast('Export réussi ✓', 'success');
-    });
-}
+        localStorage.removeItem(S.trades);
+        localStorage.removeItem(S.cache);
+        renderJournal(); renderStats();
+        toast('Effacé', 'warn');
+    };
 
-function initTradeForm() {
-    $('add-trade-btn')?.addEventListener('click', () => {
-        const s = $('add-trade-section');
-        s.style.display = s.style.display === 'none' ? 'block' : 'none';
-        s.classList.add('open');
-    });
-    $('cancel-trade-btn')?.addEventListener('click', () => {
-        $('add-trade-section').style.display = 'none';
-    });
-    $('save-trade-btn')?.addEventListener('click', () => {
-        const match = $('trade-match').value.trim();
-        const bet = $('trade-bet').value.trim();
-        const cote = parseFloat($('trade-cote').value);
-        const mise = parseFloat($('trade-mise').value) || (getBankroll() * getMisePct() / 100);
-        const type = $('trade-type').value;
-        const league = $('trade-league').value.trim();
-        if (!match || !bet || !cote) { toast('Remplis tous les champs', 'warn'); return; }
-        addTrade({ match, bet, cote, mise, type, league });
-        $('trade-match').value = ''; $('trade-bet').value = '';
-        $('trade-cote').value = ''; $('trade-mise').value = '';
-        $('trade-league').value = '';
-        $('add-trade-section').style.display = 'none';
-        renderTrades(); renderStats();
+    // Journal
+    $('add-trade-btn').onclick = () => {
+        const f = $('add-trade-form');
+        f.style.display = f.style.display === 'none' ? 'block' : 'none';
+        f.classList.add('open');
+    };
+    $('cancel-trade').onclick = () => { $('add-trade-form').style.display = 'none'; };
+    $('save-trade').onclick = () => {
+        const match = $('t-match').value.trim();
+        const bet = $('t-bet').value.trim();
+        const cote = parseFloat($('t-cote').value);
+        const mise = parseFloat($('t-mise').value) || (getBank() * getMisePct() / 100);
+        const type = $('t-type').value;
+        const league = $('t-league').value.trim();
+        if (!match || !bet || !cote) { toast('Remplis match, pari et cote', 'warn'); return; }
+        const trades = getTrades();
+        trades.unshift({ id: Date.now() + Math.random(), match, bet, cote, mise, type, league, status: 'pending', openedAt: Date.now() });
+        saveTrades(trades);
+        $('t-match').value = ''; $('t-bet').value = ''; $('t-cote').value = ''; $('t-mise').value = ''; $('t-league').value = '';
+        $('add-trade-form').style.display = 'none';
+        renderJournal(); renderStats();
         toast('Pari enregistré ✓', 'success');
-    });
-}
+    };
 
-async function init() {
-    initTheme();
-    initTabs();
-    initSections();
-    initSettings();
-    initTradeForm();
-    renderTrades();
-    renderStats();
-
-    $('theme-toggle').addEventListener('click', toggleTheme);
-
-    $('load-matches-btn')?.addEventListener('click', loadMatches);
-    $('clear-cache-btn')?.addEventListener('click', () => {
-        localStorage.removeItem(STORAGE.matchesCache);
-        state.analyzedMatches = [];
-        state.matches = [];
+    // Boutons principaux
+    $('load-matches-btn').onclick = loadMatches;
+    $('clear-cache-btn').onclick = () => {
+        localStorage.removeItem(S.cache);
+        state.matches = []; state.analyzed = [];
         renderMatches();
-        renderLeagueFilter();
         toast('Cache vidé', 'success');
-    });
-    $('generate-billets-btn')?.addEventListener('click', generateBillets);
-    $('generate-report-btn')?.addEventListener('click', generatePDF);
+    };
+    $('generate-billets-btn').onclick = generateBillets;
+    $('gen-pdf-btn').onclick = generatePDF;
 
-    // Charge le cache si présent
+    // Charge le cache au démarrage
     try {
-        const cache = JSON.parse(localStorage.getItem(STORAGE.matchesCache) || 'null');
-        if (cache && Date.now() - cache.time < 6 * 60 * 60 * 1000) {
-            state.matches = cache.matches;
-            await analyzeAllMatches();
+        const c = JSON.parse(localStorage.getItem(S.cache) || 'null');
+        if (c && Date.now() - c.time < 6 * 3600000) {
+            state.matches = c.matches;
+            state.analyzed = c.analyzed;
             renderMatches();
-            renderLeagueFilter();
         }
     } catch (e) {}
 
-    // Test connexion auto si token présent
-    if (getApiToken()) {
-        await testConnection();
-    } else {
-        updateConnStatus('', 'Configure ton token API');
-    }
+    // Test connexion
+    if (getApi()) testConnection();
 
+    renderJournal();
+    renderStats();
     log('Foot Value Pro prêt');
 }
 
